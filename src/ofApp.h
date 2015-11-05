@@ -9,6 +9,7 @@ class ofApp: public ofBaseApp
 {
     public:
     void setup();
+    void update();
     void draw();
     string normalizeFloatingPointStr(double value);
     void printValueTree(Json::Value& value, const std::string& path="root", int depth=0);

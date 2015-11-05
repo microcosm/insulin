@@ -3,35 +3,21 @@
 
 void ofApp::setup()
 {
-    url = "https://andycgm.azurewebsites.net/api/v1/entries/sgv.json?find[dateString][$gte]=2015-08-28&find[dateString][$lte]=2015-11-02";
-    //url = "https://www.flickr.com/services/rest/?method=flickr.interestingness.getList&api_key=76fee119f6a01912ef7d32cbedc761bb&format=json&nojsoncallback=1";
-    if (!response.open(url))
-    {
+    url = "https://andycgm.azurewebsites.net/api/v1/entries/sgv.json?find[dateString][$gte]=2015-08-28";
+}
+
+void ofApp::update() {
+    if (response.open(url)) {
+        root = (Json::Value) response;
+        printValueTree(root);
+    } else {
         ofLogNotice("ofApp::setup") << "Failed to parse JSON";
     }
+}
 
-    root = (Json::Value) response;
-    printValueTree(root);
-    
-    /*for(int i = 0; i < 3; i++) {
-        int j = response[0][i]["svg"].asInt();
-        int x = 1;
-    }*/
-    
-    //unsigned int numImages = MIN(5, response["photos"]["photo"].size());
-/*
-    for(unsigned int i = 0; i < numImages; i++) 
-    {
-        int farm = response["photos"]["photo"][i]["farm"].asInt();
-        std::string id = response["photos"]["photo"][i]["id"].asString();
-        std::string secret = response["photos"]["photo"][i]["secret"].asString();
-        std::string server = response["photos"]["photo"][i]["server"].asString();
-        std::string url = "http: / /farm" + ofToString(farm) + ".static.flickr.com/" + server + "/" + id + "_" + secret + ".jpg";
-
-        ofImage img;
-        img.loadImage(url);
-        images.push_back(img);
-    }*/
+void ofApp::draw()
+{
+    ofDrawBitmapString(ofToString(ofGetFrameRate()), 25, 25);
 }
 
 std::string ofApp::normalizeFloatingPointStr(double value) {
@@ -67,13 +53,13 @@ void ofApp::printValueTree(Json::Value& value, const std::string& path, int dept
     for(int i = 0; i < depth; i++) {
         spaces += "    ";
     }
-
+    
     if (value.hasComment(Json::commentBefore)) {
         cout << spaces << value.getComment(Json::commentBefore).c_str() << endl;
     }
-
+    
     cout << spaces << path.c_str() << ": ";
-
+    
     switch (value.type()) {
         case Json::nullValue:
         {
@@ -127,7 +113,7 @@ void ofApp::printValueTree(Json::Value& value, const std::string& path, int dept
             Json::Value::Members members(value.getMemberNames());
             std::sort(members.begin(), members.end());
             for (Json::Value::Members::iterator it = members.begin();
-                it != members.end(); ++it) {
+                 it != members.end(); ++it) {
                 const std::string& name = *it;
                 printValueTree(value[name], name, depth + 1);
             }
@@ -141,17 +127,4 @@ void ofApp::printValueTree(Json::Value& value, const std::string& path, int dept
     if (value.hasComment(Json::commentAfter)) {
         cout << spaces << value.getComment(Json::commentAfter).c_str() << endl;
     }
-}
-
-
-void ofApp::draw()
-{
-    /*
-    ofBackground(0);
-
-    for(std::size_t i = 0; i < 5; ++i)
-    {
-        images[i].draw(i*30, i*30);
-    }
-     */
 }
