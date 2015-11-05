@@ -62,11 +62,18 @@ std::string ofApp::normalizeFloatingPointStr(double value) {
     return s;
 }
 
-void ofApp::printValueTree(Json::Value& value, const std::string& path) {
-    if (value.hasComment(Json::commentBefore)) {
-        cout << value.getComment(Json::commentBefore).c_str() << endl;
+void ofApp::printValueTree(Json::Value& value, const std::string& path, int depth) {
+    string spaces = "";
+    for(int i = 0; i < depth; i++) {
+        spaces += "    ";
     }
-    cout << path.c_str() << ": ";
+
+    if (value.hasComment(Json::commentBefore)) {
+        cout << spaces << value.getComment(Json::commentBefore).c_str() << endl;
+    }
+
+    cout << spaces << path.c_str() << ": ";
+
     switch (value.type()) {
         case Json::nullValue:
         {
@@ -100,8 +107,8 @@ void ofApp::printValueTree(Json::Value& value, const std::string& path) {
         }
         case Json::arrayValue:
         {
+            cout << "array {" << endl;
             int size = value.size();
-            cout << "collection of " << size << "items {" << endl;
             for(int index = 0; index < size; ++index) {
                 static char buffer[16];
 #if defined(_MSC_VER) && defined(__STDC_SECURE_LIB__)
@@ -109,31 +116,30 @@ void ofApp::printValueTree(Json::Value& value, const std::string& path) {
 #else
                 snprintf(buffer, sizeof(buffer), "[%d]", index);
 #endif
-                printValueTree(value[index], path + buffer);
+                printValueTree(value[index], buffer, depth + 1);
             }
-            cout << "}" << endl;
+            cout << spaces << "}" << endl;
             break;
         }
         case Json::objectValue:
         {
-            cout << "object value {" << endl;
+            cout << "object {" << endl;
             Json::Value::Members members(value.getMemberNames());
             std::sort(members.begin(), members.end());
-            std::string suffix = *(path.end() - 1) == '.' ? "" : ".";
             for (Json::Value::Members::iterator it = members.begin();
-                 it != members.end(); ++it) {
+                it != members.end(); ++it) {
                 const std::string& name = *it;
-                printValueTree(value[name], path + suffix + name);
+                printValueTree(value[name], name, depth + 1);
             }
-            cout << "}" << endl;
+            cout << spaces << "}" << endl;
             break;
         }
         default:
-            "I don't understand, it's too complicated.";
+            cout << spaces << "I don't understand, it's too complicated." << endl;
     }
     
     if (value.hasComment(Json::commentAfter)) {
-        cout << value.getComment(Json::commentAfter).c_str() << endl;
+        cout << spaces << value.getComment(Json::commentAfter).c_str() << endl;
     }
 }
 

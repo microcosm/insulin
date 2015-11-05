@@ -11,7 +11,7 @@ class ofApp: public ofBaseApp
     void setup();
     void draw();
     string normalizeFloatingPointStr(double value);
-    void printValueTree(Json::Value& value, const std::string& path = ".");
+    void printValueTree(Json::Value& value, const std::string& path="root", int depth=0);
 
     ofxJSONElement response;
     Json::Value root;
