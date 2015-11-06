@@ -55,6 +55,10 @@ void ofApp::draw() {
     }
 }
 
+void ofApp::keyPressed(int key) {
+    anim.keyPressed(key);
+}
+
 void ofApp::exit() {
     jsonParser.stopThread();
 }
