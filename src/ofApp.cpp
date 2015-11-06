@@ -1,6 +1,8 @@
 #include "ofApp.h"
 
 void ofApp::setup() {
+    //ofSetWindowShape(1600, 2560);
+    ofSetWindowShape(800, 1280);
     bloodGlucoseValue = -1;
     font.loadFont("NovaMono.ttf", 120);
     newValueDetected = false;

@@ -2,14 +2,18 @@
 
 void animation::setup(){
     halfWidth = ofGetWidth() * 0.5;
+
     card1.setup("card-1.png", 1.0, TEXTURE_OFFSET_MIDDLE_RIGHT);
     card2.setup("card-1.png", 1.0, TEXTURE_OFFSET_MIDDLE_RIGHT);
     card3.setup("card-1.png", 1.0, TEXTURE_OFFSET_MIDDLE_RIGHT);
-    card4.setup("card-mask.png", 0.75, TEXTURE_OFFSET__TOP__RIGHT_TO_CENTER);
+
+    wallMask.setup("wallMask.png", 0.3, TEXTURE_OFFSET__TOP__RIGHT_TO_CENTER);
+
     glass1.setup("glass-1.png", 0.4, TEXTURE_OFFSET_TOP_LEFT);
     glass2.setup("glass-2.png", 150.0, TEXTURE_OFFSET_BOTTOM_LEFT);
     glass3.setup("glass-2.png", 110.0, TEXTURE_OFFSET_BOTTOM_RIGHT);
     glass4.setup("glass-2.png", 120.0, TEXTURE_OFFSET_TOP_LEFT);
+
     masker.setup(4, ISOLATE_LAYERS);
 }
 
@@ -63,10 +67,11 @@ void animation::update(){
     }
     masker.endMask(2);
     
+    //Walls
     masker.beginLayer(3);
     {
-        glass1.incrementTextureOffset(0.004, -0.0025);
-        glass1.incrementTextureScale(0.014);
+        glass1.incrementTextureOffset(0.002, -0.0025);
+        //glass1.incrementTextureScale(0.014);
         glass1.draw(-halfWidth, 0);
         glass1.draw(halfWidth, 0, TEXTURE_FLIP_VERTICAL);
     }
@@ -74,9 +79,9 @@ void animation::update(){
     
     masker.beginMask(3);
     {
-        card4.incrementTextureScale(0.0075);
-        card4.incrementTextureOffsetY(0.004);
-        card4.draw();
+        //wallMask.incrementTextureScale(0.0075);
+        wallMask.incrementTextureOffsetY(0.001);
+        wallMask.draw();
     }
     masker.endMask(3);
 }
