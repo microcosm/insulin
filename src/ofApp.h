@@ -1,9 +1,7 @@
 #pragma once
 
-
 #include "ofMain.h"
-#include "ofxJSON.h"
-
+#include "jsonParse.h"
 
 class ofApp: public ofBaseApp
 {
@@ -11,10 +9,7 @@ class ofApp: public ofBaseApp
     void setup();
     void update();
     void draw();
-    string normalizeFloatingPointStr(double value);
-    void printValueTree(Json::Value& value, const std::string& path="root", int depth=0);
+    void exit();
 
-    ofxJSONElement response;
-    Json::Value root;
-    string url;
+    jsonParse jsonParser;
 };
