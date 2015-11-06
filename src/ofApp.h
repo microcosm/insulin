@@ -13,4 +13,6 @@ class ofApp: public ofBaseApp
 
     jsonParse jsonParser;
     int bloodGlucoseValue;
+    ofVec2f bgTextPosition;
+    ofTrueTypeFont font;
 };
