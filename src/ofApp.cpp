@@ -21,15 +21,18 @@ void ofApp::setup() {
     bgBoxPosition.y = ofGetHeight() - bgBoxOffset.y;
 
     jsonParser.startThread(true, false);
+    anim.setup();
 }
 
 void ofApp::update() {
     jsonParser.lock();
     bloodGlucoseValue = jsonParser.bloodGlucoseValue;
     jsonParser.unlock();
+    anim.update();
 }
 
 void ofApp::draw() {
+    anim.draw();
     ofDrawBitmapString(ofToString(ofGetFrameRate()), 25, 25);
     if(bloodGlucoseValue != -1) {
         ofSetColor(ofColor::white);

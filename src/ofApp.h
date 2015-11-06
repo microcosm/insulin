@@ -2,6 +2,7 @@
 
 #include "ofMain.h"
 #include "jsonParse.h"
+#include "animation.h"
 
 class ofApp: public ofBaseApp
 {
@@ -12,6 +13,7 @@ class ofApp: public ofBaseApp
     void exit();
 
     jsonParse jsonParser;
+    animation anim;
     int bloodGlucoseValue;
     ofVec2f bgTextPosition, bgTextOffset;
     ofVec2f bgBoxPosition, bgBoxOffset;
