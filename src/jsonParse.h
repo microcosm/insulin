@@ -20,7 +20,7 @@ public:
 protected:
     string url = "https://andycgm.azurewebsites.net/api/v1/entries/sgv.json?find[dateString][$gte]=2015-08-28";
     ofxJSONElement response;
-    Json::Value root;
+    Json::Value root, latestValidEntry;
 
     void threadedFunction() {
         while(isThreadRunning()) {
@@ -28,7 +28,7 @@ protected:
                 root = (Json::Value) response;
                 cout << endl << "===========================================" << endl;
                 cout << "Time elapsed: " << ofGetElapsedTimeMillis() << endl << endl;
-                printValueTree(root);
+                //printValueTree(root);
                 extractLatestValues(root);
             } else {
                 cout << "Couldn't open URL to retreive JSON";
@@ -38,14 +38,32 @@ protected:
     }
 
     void extractLatestValues(Json::Value& root) {
-        if(validateRoot(root)) {
+        if(extractLatestValidEntry(root)) {
             lock();
-            bloodGlucoseValue = root[0]["sgv"].asInt();
+            bloodGlucoseValue = latestValidEntry["sgv"].asLargestInt();
             unlock();
         }
     }
 
-    bool validateRoot(Json::Value& root) {
+    bool extractLatestValidEntry(Json::Value& root) {
+        cout << "Validating top-level array... ";
+        if(!validateArray(root)) {
+            return false;
+        }
+        cout << "valid." << endl;
+        
+        for(int i = 0; i < root.size(); i++) {
+            cout << "Validating entry " << i << "... ";
+            if(validateEntry(root[i])) {
+                cout << "valid.";
+                latestValidEntry = root[i];
+                return true;
+            }
+        }
+        return false;
+    }
+
+    bool validateArray(Json::Value& root) {
         if(root.type() != Json::arrayValue) {
             cout << "Expected array here, but got something else.";
             return false;
@@ -54,6 +72,31 @@ protected:
             return false;
         }
         return true;
+    }
+
+    bool validateEntry(Json::Value& object) {
+        vector<string> members(object.getMemberNames());
+        if(!contains(members, "type")) {
+            cout << "doesn't contain required member 'type'." << endl;
+            return false;
+        }
+        if(!contains(members, "sgv")) {
+            cout << "doesn't contain required member 'sgv'." << endl;
+            return false;
+        }
+        if(object["type"].asString() != "sgv") {
+            cout << "member 'type' is '" << object["type"].asString() << "', not 'sgv'." << endl;
+            return false;
+        }
+        if(object["sgv"].asLargestInt() <= 20) {
+            cout << "member 'sgv' is '" << object["sgv"].asLargestInt() << "', most likely a false reading." << endl;
+            return false;
+        }
+        return true;
+    }
+
+    bool contains(vector<string>& haystack, string needle) {
+        return find(haystack.begin(), haystack.end(), needle) != haystack.end();
     }
 
     std::string normalizeFloatingPointStr(double value) {
