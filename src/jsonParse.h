@@ -10,6 +10,8 @@ class jsonParse : public ofThread {
         while(isThreadRunning()) {
             if (response.open(url)) {
                 root = (Json::Value) response;
+                cout << endl << "===========================================" << endl;
+                cout << "Time elapsed: " << ofGetElapsedTimeMillis() << endl << endl;
                 printValueTree(root);
             } else {
                 ofLogNotice("ofApp::setup") << "Failed to parse JSON";
@@ -17,6 +19,7 @@ class jsonParse : public ofThread {
             //lock();
             
             //unlock();
+            sleep(20000);
         }
     }
     
