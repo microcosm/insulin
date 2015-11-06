@@ -13,6 +13,8 @@ class ofApp: public ofBaseApp
     void draw();
     void keyPressed(int key);
     void exit();
+    void startTimer();
+    void animateWhenTimerFinished();
 
     jsonParse jsonParser;
     animation anim;
@@ -23,5 +25,7 @@ class ofApp: public ofBaseApp
     float halfWidth, boxBorderSize, boxBorderDouble;
     ofTrueTypeFont font;
     ofxAnimatableFloat bgOpacity;
-    bool newValueDetected;
+    bool newValueDetected, timerRunning;
+    unsigned long long timerStartedAt;
+    float delayBeforeAnimation, animationInSecs, animationOutSecs;
 };

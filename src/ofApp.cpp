@@ -6,6 +6,9 @@ void ofApp::setup() {
     bloodGlucoseValue = -1;
     font.loadFont("NovaMono.ttf", 120);
     newValueDetected = false;
+    delayBeforeAnimation = 9000;
+    animationInSecs = 0.5;
+    animationOutSecs = 4.5;
 
     boxSize.x = 300;
     boxSize.y = 160;
@@ -23,6 +26,8 @@ void ofApp::setup() {
     bgBoxPosition.x = halfWidth - bgBoxOffset.x;
     bgBoxPosition.y = ofGetHeight() - bgBoxOffset.y;
 
+    bgOpacity.setRepeatType(PLAY_ONCE);
+    bgOpacity.setCurve(EASE_IN_EASE_OUT);
     jsonParser.startThread(true, false);
     anim.setup();
 }
@@ -34,11 +39,13 @@ void ofApp::update() {
     jsonParser.newValueDetected = false;
     jsonParser.unlock();
     if(newValueDetected) {
-        bgOpacity.animateFromTo(255, 0);
-        bgOpacity.setDuration(7);
-        bgOpacity.setRepeatType(PLAY_ONCE);
-        bgOpacity.setCurve(LATE_EASE_IN_EASE_OUT);
+        startTimer();
+        bgOpacity.animateFromTo(0, 255);
+        bgOpacity.setDuration(animationInSecs);
         newValueDetected = false;
+    }
+    if(timerRunning) {
+        animateWhenTimerFinished();
     }
     bgOpacity.update(1.0f / 60.0f);
     anim.update();
@@ -63,4 +70,17 @@ void ofApp::keyPressed(int key) {
 
 void ofApp::exit() {
     jsonParser.stopThread();
+}
+
+void ofApp::startTimer() {
+    timerRunning = true;
+    timerStartedAt = ofGetElapsedTimeMillis();
+}
+
+void ofApp::animateWhenTimerFinished() {
+    if(ofGetElapsedTimeMillis() > timerStartedAt + delayBeforeAnimation) {
+        bgOpacity.animateFromTo(255, 0);
+        bgOpacity.setDuration(animationOutSecs);
+        timerRunning = false;
+    }
 }
