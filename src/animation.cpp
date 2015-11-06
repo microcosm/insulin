@@ -15,6 +15,7 @@ void animation::setup(){
 }
 
 void animation::update(){
+    ofSetColor(ofColor::white);
     masker.beginLayer(0);
     {
         ofSetColor(ofColor::red);
@@ -82,6 +83,7 @@ void animation::update(){
 }
 
 void animation::draw(){
+    ofSetColor(ofColor::white);
     card1.draw();
     masker.draw();
     masker.drawOverlay();

@@ -42,13 +42,9 @@ protected:
     void extractLatestValues(Json::Value& root) {
         if(extractLatestValidEntry(root)) {
             lock();
-            
-            cout << endl << latestValidEntry["_id"].asString() << " vs " << lastId << endl;
-            
             bloodGlucoseValue = latestValidEntry["sgv"].asLargestInt();
             newValueDetected = latestValidEntry["_id"].asString() != lastId;
             lastId = latestValidEntry["_id"].asString();
-            cout << endl << latestValidEntry["_id"].asString() << " vs " << lastId << endl;
             unlock();
         }
     }
