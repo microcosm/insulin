@@ -1,7 +1,23 @@
 #include "ofxJSON.h"
 
-class jsonParse : public ofThread {
+/*
+ _id: [string] 5635ab0e1872c1a9b1bc752d
+ date: [uint] 1445722752323
+ dateString: [string] 2015-10-24T17:39:12.323-0400
+ device: [string] xDrip-DexcomShare
+ direction: [string] Flat
+ filtered: [int] 152000
+ noise: [int] 1
+ rssi: [int] 100
+ sgv: [int] 100
+ type: [string] sgv
+ unfiltered: [int] 148000
+*/
 
+class jsonParse : public ofThread {
+public:
+    int bloodGlucoseValue = -1;
+protected:
     string url = "https://andycgm.azurewebsites.net/api/v1/entries/sgv.json?find[dateString][$gte]=2015-08-28";
     ofxJSONElement response;
     Json::Value root;
@@ -23,14 +39,15 @@ class jsonParse : public ofThread {
 
     void extractLatestValues(Json::Value& root) {
         if(validateRoot(root)) {
-            Json::Value::Members members(root[0].getMemberNames());
-
+            lock();
+            bloodGlucoseValue = root[0]["sgv"].asInt();
+            unlock();
         }
     }
 
     bool validateRoot(Json::Value& root) {
         if(root.type() != Json::arrayValue) {
-            cout << "Expected array here, but got a something else.";
+            cout << "Expected array here, but got something else.";
             return false;
         } else if(root.size() < 1) {
             cout << "Expected at least one value from root - there are none.";

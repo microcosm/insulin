@@ -12,4 +12,5 @@ class ofApp: public ofBaseApp
     void exit();
 
     jsonParse jsonParser;
+    int bloodGlucoseValue;
 };
