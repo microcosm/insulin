@@ -3,6 +3,7 @@
 void ofApp::setup() {
     bloodGlucoseValue = -1;
     font.loadFont("NovaMono.ttf", 120);
+    newValueDetected = false;
 
     boxSize.x = 300;
     boxSize.y = 160;
@@ -27,7 +28,17 @@ void ofApp::setup() {
 void ofApp::update() {
     jsonParser.lock();
     bloodGlucoseValue = jsonParser.bloodGlucoseValue;
+    newValueDetected = jsonParser.newValueDetected;
+    jsonParser.newValueDetected = false;
     jsonParser.unlock();
+    if(newValueDetected) {
+        bgOpacity.animateFromTo(255, 0);
+        bgOpacity.setDuration(7);
+        bgOpacity.setRepeatType(PLAY_ONCE);
+        bgOpacity.setCurve(LATE_EASE_IN_EASE_OUT);
+        newValueDetected = false;
+    }
+    bgOpacity.update(1.0f / 60.0f);
     anim.update();
 }
 
@@ -35,11 +46,11 @@ void ofApp::draw() {
     anim.draw();
     ofDrawBitmapString(ofToString(ofGetFrameRate()), 25, 25);
     if(bloodGlucoseValue != -1) {
-        ofSetColor(ofColor::white);
+        ofSetColor(ofColor::white, bgOpacity.val());
         ofRect(bgBoxPosition.x, bgBoxPosition.y, boxSize.x, boxSize.y);
-        ofSetColor(ofColor::black);
+        ofSetColor(ofColor::black, bgOpacity.val());
         ofRect(bgBoxPosition.x + boxBorderSize, bgBoxPosition.y + boxBorderSize, boxSize.x - boxBorderDouble, boxSize.y - boxBorderDouble);
-        ofSetColor(ofColor::lightGray);
+        ofSetColor(ofColor::lightGray, bgOpacity.val());
         font.drawString(ofToString(bloodGlucoseValue), bgTextPosition.x, bgTextPosition.y);
     }
 }

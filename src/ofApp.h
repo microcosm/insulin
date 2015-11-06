@@ -3,6 +3,7 @@
 #include "ofMain.h"
 #include "jsonParse.h"
 #include "animation.h"
+#include "ofxAnimatableFloat.h"
 
 class ofApp: public ofBaseApp
 {
@@ -20,4 +21,6 @@ class ofApp: public ofBaseApp
     ofVec2f boxSize;
     float halfWidth, boxBorderSize, boxBorderDouble;
     ofTrueTypeFont font;
+    ofxAnimatableFloat bgOpacity;
+    bool newValueDetected;
 };

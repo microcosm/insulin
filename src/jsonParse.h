@@ -17,7 +17,9 @@
 class jsonParse : public ofThread {
 public:
     int bloodGlucoseValue = -1;
+    bool newValueDetected = false;
 protected:
+    string lastId = "";
     string url = "https://andycgm.azurewebsites.net/api/v1/entries/sgv.json?find[dateString][$gte]=2015-08-28";
     ofxJSONElement response;
     Json::Value root, latestValidEntry;
@@ -40,7 +42,13 @@ protected:
     void extractLatestValues(Json::Value& root) {
         if(extractLatestValidEntry(root)) {
             lock();
+            
+            cout << endl << latestValidEntry["_id"].asString() << " vs " << lastId << endl;
+            
             bloodGlucoseValue = latestValidEntry["sgv"].asLargestInt();
+            newValueDetected = latestValidEntry["_id"].asString() != lastId;
+            lastId = latestValidEntry["_id"].asString();
+            cout << endl << latestValidEntry["_id"].asString() << " vs " << lastId << endl;
             unlock();
         }
     }
