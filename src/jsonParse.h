@@ -92,7 +92,7 @@ protected:
             cout << "member 'type' is '" << object["type"].asString() << "', not 'sgv'." << endl;
             return false;
         }
-        if(object["sgv"].asLargestInt() <= 20) {
+        if(object["sgv"].asLargestInt() <= 20 || object["sgv"].asLargestInt() >= 999) {
             cout << "member 'sgv' is '" << object["sgv"].asLargestInt() << "', most likely a false reading." << endl;
             return false;
         }
