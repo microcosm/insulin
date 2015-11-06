@@ -10,8 +10,14 @@ public:
     void keyPressed(int key);
     
     ofxLayerMask masker;
-    ofxTexturePlane card1, card2, card3;
-    ofxTexturePlane wallMask;
-    ofxTexturePlane glass1, glass2, glass3, glass4;
+    ofxTexturePlane wall, wallMask;
+
+    //Blood work
+    ofxTexturePlane mask, layer;
+    vector< vector<ofxTexturePlane> > masks;
+    vector<ofxTexturePlane> layers, maskLoader;
+    int numLayers, numMasksPerLayer;
+    float scale, opacity, increment, layerIncrement, maskIncrement;
+    
     float halfWidth;
 };

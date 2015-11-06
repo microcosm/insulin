@@ -3,92 +3,83 @@
 void animation::setup(){
     halfWidth = ofGetWidth() * 0.5;
 
-    card1.setup("card-1.png", 1.0, TEXTURE_OFFSET_MIDDLE_RIGHT);
-    card2.setup("card-1.png", 1.0, TEXTURE_OFFSET_MIDDLE_RIGHT);
-    card3.setup("card-1.png", 1.0, TEXTURE_OFFSET_MIDDLE_RIGHT);
-
     wallMask.setup("wallMask.png", 0.3, TEXTURE_OFFSET__TOP__RIGHT_TO_CENTER);
+    wall.setup("glass-1.png", 1.0, TEXTURE_OFFSET_TOP_LEFT);
 
-    glass1.setup("glass-1.png", 0.4, TEXTURE_OFFSET_TOP_LEFT);
-    glass2.setup("glass-2.png", 150.0, TEXTURE_OFFSET_BOTTOM_LEFT);
-    glass3.setup("glass-2.png", 110.0, TEXTURE_OFFSET_BOTTOM_RIGHT);
-    glass4.setup("glass-2.png", 120.0, TEXTURE_OFFSET_TOP_LEFT);
-
-    masker.setup(4, ISOLATE_LAYERS);
+    layerIncrement = 0.005;
+    maskIncrement = 0.0002;
+    
+    numLayers = 6;
+    numMasksPerLayer = 2;
+    masker.setup(numLayers + 1, ISOLATE_LAYERS);
+    
+    layer.setup("glass-3.png");
+    for(int i = 0; i < numLayers; i++) {
+        scale = ofMap(i, 0, numLayers-1, 4, 2.5);
+        layer.setTextureScale(scale);
+        layer.setTextureOffset(i % 2 == 0 ? TEXTURE_OFFSET__MIDDLE__LEFT_TO_CENTER : TEXTURE_OFFSET__MIDDLE__RIGHT_TO_CENTER);
+        layer.setTextureOffsetY(ofRandom(2));
+        layers.push_back(layer);
+        
+        maskLoader.clear();
+        scale = ofMap(i, 0, numLayers-1, 6, 0.33);
+        mask.setup("tissue.png", scale, TEXTURE_OFFSET__MIDDLE__LEFT_TO_CENTER);
+        for(int j = 0; j < numMasksPerLayer; j++) {
+            mask.setTextureOffsetY(ofRandom(2));
+            maskLoader.push_back(mask);
+        }
+        masks.push_back(maskLoader);
+    }
 }
 
 void animation::update(){
     ofSetColor(ofColor::white);
-    masker.beginLayer(0);
-    {
-        ofSetColor(ofColor::red);
-        card1.incrementTextureOffsetY(0.003);
-        card1.draw();
+
+    for(int i = 0; i < numLayers; i++) {
+        masker.beginLayer(i);
+        {
+            ofSetColor(ofColor(ofColor::red));
+            increment = ofMap(i, 0, numLayers-1, layerIncrement, -layerIncrement);
+            layers.at(i).incrementTextureOffsetY(increment);
+            layers.at(i).draw();
+        }
+        masker.endLayer(i);
+        
+        masker.beginMask(i);
+        {
+            ofSetColor(ofColor::white);
+            ofBackground(ofColor::white);
+            for(int j = 0; j < numMasksPerLayer; j++) {
+                increment = (j+1) * ofMap(i, 0, numLayers-1, maskIncrement, -maskIncrement);
+                masks.at(i).at(j).incrementTextureOffsetY(increment);
+                masks.at(i).at(j).draw();
+            }
+        }
+        masker.endMask(i);
     }
-    masker.endLayer(0);
-    
-    masker.beginMask(0);
-    {
-        glass2.incrementTextureOffsetY(0.005);
-        glass2.incrementTextureScale(0.1);
-        glass2.draw();
-    }
-    masker.endMask(0);
-    
-    masker.beginLayer(1);
-    {
-        ofSetColor(ofColor::red);
-        card2.incrementTextureOffsetY(0.002);
-        card2.draw();
-    }
-    masker.endLayer(1);
-    
-    masker.beginMask(1);
-    {
-        glass3.incrementTextureOffsetY(0.002);
-        glass3.incrementTextureScale(0.05);
-        glass3.draw();
-    }
-    masker.endMask(1);
-    
-    masker.beginLayer(2);
-    {
-        ofSetColor(ofColor::red);
-        card3.incrementTextureOffsetY(0.005);
-        card3.draw();
-    }
-    masker.endLayer(2);
-    
-    masker.beginMask(2);
-    {
-        glass4.incrementTextureOffsetY(0.008);
-        glass4.incrementTextureScale(0.14);
-        glass4.draw();
-    }
-    masker.endMask(2);
     
     //Walls
-    masker.beginLayer(3);
+    masker.beginLayer(numLayers);
     {
-        glass1.incrementTextureOffset(0.002, -0.0025);
-        //glass1.incrementTextureScale(0.014);
-        glass1.draw(-halfWidth, 0);
-        glass1.draw(halfWidth, 0, TEXTURE_FLIP_VERTICAL);
+        wall.incrementTextureOffset(0.002, -0.0025);
+        //wall.incrementTextureScale(0.014);
+        wall.draw(-halfWidth, 0);
+        wall.draw(halfWidth, 0, TEXTURE_FLIP_VERTICAL);
     }
-    masker.endLayer(3);
+    masker.endLayer(numLayers);
     
-    masker.beginMask(3);
+    masker.beginMask(numLayers);
     {
         //wallMask.incrementTextureScale(0.0075);
         wallMask.incrementTextureOffsetY(0.001);
         wallMask.draw();
     }
-    masker.endMask(3);
+    masker.endMask(numLayers);
 }
 
 void animation::draw(){
-    ofSetColor(ofColor::white);
-    card1.draw();
+    ofSetColor(ofColor::red);
+    layers.at(0).draw();
     masker.draw();
     masker.drawOverlay();
 }
