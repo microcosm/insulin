@@ -13,6 +13,9 @@ class ofApp: public ofBaseApp
 
     jsonParse jsonParser;
     int bloodGlucoseValue;
-    ofVec2f bgTextPosition;
+    ofVec2f bgTextPosition, bgTextOffset;
+    ofVec2f bgBoxPosition, bgBoxOffset;
+    ofVec2f boxSize;
+    float halfWidth;
     ofTrueTypeFont font;
 };
