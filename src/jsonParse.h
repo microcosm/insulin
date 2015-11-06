@@ -68,32 +68,32 @@ class jsonParse : public ofThread {
             }
             case Json::intValue:
             {
-                cout << Json::valueToString(value.asLargestInt()).c_str() << endl;
+                cout << "[int] " << Json::valueToString(value.asLargestInt()).c_str() << endl;
                 break;
             }
             case Json::uintValue:
             {
-                cout << Json::valueToString(value.asLargestUInt()).c_str() << endl;
+                cout << "[uint] " << Json::valueToString(value.asLargestUInt()).c_str() << endl;
                 break;
             }
             case Json::realValue:
             {
-                cout << normalizeFloatingPointStr(value.asDouble()).c_str() << endl;
+                cout << "[real] " << normalizeFloatingPointStr(value.asDouble()).c_str() << endl;
                 break;
             }
             case Json::stringValue:
             {
-                cout << value.asString().c_str() << endl;
+                cout << "[string] " << value.asString().c_str() << endl;
                 break;
             }
             case Json::booleanValue:
             {
-                cout << "boolean " << (value.asBool() ? "true" : "false");
+                cout << "[boolean] " << (value.asBool() ? "true" : "false");
                 break;
             }
             case Json::arrayValue:
             {
-                cout << "array {" << endl;
+                cout << "[array] {" << endl;
                 int size = value.size();
                 for(int index = 0; index < size; ++index) {
                     static char buffer[16];
@@ -109,7 +109,7 @@ class jsonParse : public ofThread {
             }
             case Json::objectValue:
             {
-                cout << "object {" << endl;
+                cout << "[object] {" << endl;
                 Json::Value::Members members(value.getMemberNames());
                 std::sort(members.begin(), members.end());
                 for (Json::Value::Members::iterator it = members.begin();
