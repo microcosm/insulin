@@ -13,16 +13,32 @@ class jsonParse : public ofThread {
                 cout << endl << "===========================================" << endl;
                 cout << "Time elapsed: " << ofGetElapsedTimeMillis() << endl << endl;
                 printValueTree(root);
+                extractLatestValues(root);
             } else {
-                ofLogNotice("ofApp::setup") << "Failed to parse JSON";
+                cout << "Couldn't open URL to retreive JSON";
             }
-            //lock();
-            
-            //unlock();
             sleep(20000);
         }
     }
-    
+
+    void extractLatestValues(Json::Value& root) {
+        if(validateRoot(root)) {
+            Json::Value::Members members(root[0].getMemberNames());
+
+        }
+    }
+
+    bool validateRoot(Json::Value& root) {
+        if(root.type() != Json::arrayValue) {
+            cout << "Expected array here, but got a something else.";
+            return false;
+        } else if(root.size() < 1) {
+            cout << "Expected at least one value from root - there are none.";
+            return false;
+        }
+        return true;
+    }
+
     std::string normalizeFloatingPointStr(double value) {
         char buffer[32];
 #if defined(_MSC_VER) && defined(__STDC_SECURE_LIB__)
@@ -50,7 +66,7 @@ class jsonParse : public ofThread {
         }
         return s;
     }
-    
+
     void printValueTree(Json::Value& value, const std::string& path="root", int depth=0) {
         string spaces = "";
         for(int i = 0; i < depth; i++) {
