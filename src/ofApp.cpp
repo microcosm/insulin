@@ -43,6 +43,7 @@ void ofApp::update() {
         startTimer();
         bgOpacity.animateFromTo(0, 255);
         bgOpacity.setDuration(animationInSecs);
+        anim.newBgValue(bloodGlucoseValue);
         newValueDetected = false;
     }
     if(timerRunning) {
