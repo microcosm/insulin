@@ -7,7 +7,7 @@ void ofApp::setup() {
     bloodGlucoseValue = -1;
     font.loadFont("NovaMono.ttf", 120);
     newValueDetected = false;
-    delayBeforeAnimation = 45000;
+    delayBeforeAnimation = 154000;
     animationInSecs = 0.5;
     animationOutSecs = 5.5;
 
