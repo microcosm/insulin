@@ -59,7 +59,7 @@ protected:
         for(int i = 0; i < root.size(); i++) {
             cout << "Validating entry " << i << "... ";
             if(validateEntry(root[i])) {
-                cout << "valid.";
+                cout << "valid." << endl;
                 latestValidEntry = root[i];
                 return true;
             }
