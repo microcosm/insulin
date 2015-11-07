@@ -12,6 +12,7 @@ public:
     void newBgValue(int _bloodGlucoseValue);
     
 protected:
+    int makeUsable(int _bloodGlucoseValue);
     ofxLayerMask masker;
     ofxTexturePlane wall, wallMask;
 
