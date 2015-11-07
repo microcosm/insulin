@@ -2,7 +2,7 @@
 
 void animation::setup(float _width, float _height){
     testMode = false;
-    testModeIncrement = 0.0003;
+    refTestModeIncrement = 0.0003;
 
     width = _width;
     height = _height;
@@ -85,12 +85,13 @@ void animation::setup(float _width, float _height){
 
 void animation::update(){
     if(testMode) {
-        wallMaskScale.reset(ofMap(sin(ofGetElapsedTimeMillis() * testModeIncrement), -1, 1, wallMaskScaleLo, wallMaskScaleHi));
-        refLayerIncrement.reset(ofMap(sin(ofGetElapsedTimeMillis() * testModeIncrement), -1, 1, layerIncrementLo, layerIncrementHi));
-        refMaskIncrement.reset(ofMap(sin(ofGetElapsedTimeMillis() * testModeIncrement), -1, 1, maskIncrementLo, maskIncrementHi));
-        refWallIncrementX.reset(ofMap(sin(ofGetElapsedTimeMillis() * testModeIncrement), -1, 1, wallIncrementXLo, wallIncrementXHi));
-        refWallIncrementY.reset(ofMap(sin(ofGetElapsedTimeMillis() * testModeIncrement), -1, 1, wallIncrementYLo, wallIncrementYHi));
-        refWallMaskIncrementY.reset(ofMap(sin(ofGetElapsedTimeMillis() * testModeIncrement), -1, 1, wallMaskIncrementYLo, wallMaskIncrementYHi));
+        sinTestModeIncrement = sin(ofGetElapsedTimeMillis() * refTestModeIncrement);
+        wallMaskScale.reset(ofMap(sinTestModeIncrement, -1, 1, wallMaskScaleLo, wallMaskScaleHi));
+        refLayerIncrement.reset(ofMap(sinTestModeIncrement, -1, 1, layerIncrementLo, layerIncrementHi));
+        refMaskIncrement.reset(ofMap(sinTestModeIncrement, -1, 1, maskIncrementLo, maskIncrementHi));
+        refWallIncrementX.reset(ofMap(sinTestModeIncrement, -1, 1, wallIncrementXLo, wallIncrementXHi));
+        refWallIncrementY.reset(ofMap(sinTestModeIncrement, -1, 1, wallIncrementYLo, wallIncrementYHi));
+        refWallMaskIncrementY.reset(ofMap(sinTestModeIncrement, -1, 1, wallMaskIncrementYLo, wallMaskIncrementYHi));
     } else {
         if(ofGetFrameNum() > 0) {
             wallMaskScale.update(ofGetLastFrameTime());
@@ -174,7 +175,7 @@ void animation::draw() {
 
     if(testMode) {
         ofSetColor(ofColor::gray);
-        ofDrawBitmapString(ofToString(ofMap(sin(ofGetElapsedTimeMillis() * testModeIncrement), -1, 1, bgLo, bgHi)), 25, 100);
+        ofDrawBitmapString(ofToString(ofMap(sinTestModeIncrement, -1, 1, bgLo, bgHi)), 25, 100);
     }
 }
 

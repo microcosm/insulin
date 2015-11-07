@@ -42,5 +42,5 @@ protected:
     unsigned long long timeSinceLastFrame;
 
     bool testMode;
-    float testModeIncrement;
+    float refTestModeIncrement, sinTestModeIncrement;
 };
