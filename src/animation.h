@@ -10,6 +10,8 @@ public:
     void draw();
     void keyPressed(int key);
     void newBgValue(int _bloodGlucoseValue);
+    bool isInTestMode();
+    int currentTestBg();
     
 protected:
     int makeUsable(int _bloodGlucoseValue);

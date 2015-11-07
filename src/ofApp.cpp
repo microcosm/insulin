@@ -31,6 +31,9 @@ void ofApp::setup() {
     bgOpacity.setCurve(EASE_IN_EASE_OUT);
     jsonParser.startThread(true, false);
     anim.setup(width, height);
+    if(anim.isInTestMode()) {
+        bgOpacity.reset(255);
+    }
 }
 
 void ofApp::update() {
@@ -39,7 +42,7 @@ void ofApp::update() {
     newValueDetected = jsonParser.newValueDetected;
     jsonParser.newValueDetected = false;
     jsonParser.unlock();
-    if(newValueDetected) {
+    if(!anim.isInTestMode() && newValueDetected) {
         cout << "Value has changed." << endl;
         startTimer();
         bgOpacity.animateFromTo(0, 255);
@@ -59,6 +62,9 @@ void ofApp::update() {
 void ofApp::draw() {
     anim.draw();
     //ofDrawBitmapString(ofToString(ofGetFrameRate()), 25, 25);
+    if(anim.isInTestMode()) {
+        bloodGlucoseValue = anim.currentTestBg();
+    }
     if(bloodGlucoseValue != -1) {
         ofSetColor(ofColor::white, bgOpacity.val());
         ofRect(bgBoxPosition.x, bgBoxPosition.y, boxSize.x, boxSize.y);

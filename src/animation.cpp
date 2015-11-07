@@ -2,7 +2,7 @@
 
 void animation::setup(float _width, float _height){
     testMode = false;
-    refTestModeIncrement = 0.0003;
+    refTestModeIncrement = 0.00003;
 
     width = _width;
     height = _height;
@@ -11,7 +11,7 @@ void animation::setup(float _width, float _height){
     quarterWidth = width * 0.25;
 
     bloodGlucoseValue = -1;
-    bgLo = 70; bgHi = 250;
+    bgLo = 70; bgHi = 270;
     
     wallMaskScaleLo = 0.4;
     wallMaskScaleHi = 0.15;
@@ -172,11 +172,6 @@ void animation::draw() {
         masker.draw();
         masker.drawOverlay();
     }
-
-    if(testMode) {
-        ofSetColor(ofColor::gray);
-        ofDrawBitmapString(ofToString(ofMap(sinTestModeIncrement, -1, 1, bgLo, bgHi)), 25, 100);
-    }
 }
 
 void animation::keyPressed(int key) {
@@ -215,4 +210,12 @@ int animation::makeUsable(int _bloodGlucoseValue) {
         return 270;
     }
     return _bloodGlucoseValue;
+}
+
+bool animation::isInTestMode() {
+    return testMode;
+}
+
+int animation::currentTestBg() {
+    return ofMap(sinTestModeIncrement, -1, 1, bgLo, bgHi);
 }
