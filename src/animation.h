@@ -22,13 +22,16 @@ public:
     int numLayers, numMasksPerLayer;
     float scale, opacity, increment;
     float layerIncrement, maskIncrement;
-    float refLayerIncrement, refMaskIncrement;
     float wallIncrementX, wallIncrementY, wallMaskIncrementY;
     float refWallIncrementX, refWallIncrementY, refWallMaskIncrementY;
 
     ofxAnimatableFloat wallMaskScale;
     float wallMaskScaleHi, wallMaskScaleLo;
     float currentMaskWidth;
+
+    ofxAnimatableFloat refLayerIncrement, refMaskIncrement;
+    float layerIncrementLo, layerIncrementHi;
+    float maskIncrementLo, maskIncrementHi;
     
     float width, height, halfWidth, halfHeight, quarterWidth;
     unsigned long long timeSinceLastFrame;
