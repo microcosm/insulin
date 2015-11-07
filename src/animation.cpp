@@ -2,7 +2,7 @@
 
 void animation::setup(float _width, float _height){
     testMode = true;
-    testModeIncrement = 0.001;
+    testModeIncrement = 0.0003;
 
     width = _width;
     height = _height;
@@ -15,7 +15,7 @@ void animation::setup(float _width, float _height){
     bgHi = 250;
 
     wallMaskScaleHi = 0.15;
-    wallMaskScaleLo = 0.5;
+    wallMaskScaleLo = 0.35;
     wallMaskScale.reset(0.35);
     wallMaskScale.setDuration(120);
     wallMaskScale.setRepeatType(PLAY_ONCE);
@@ -25,14 +25,14 @@ void animation::setup(float _width, float _height){
     wall.setup("glass-1.png", width, height, 1.0, TEXTURE_OFFSET_TOP_LEFT);
     
     //Blood speed
-    layerIncrementHi = 0.15;
+    layerIncrementHi = 0.05;
     layerIncrementLo = 0.5;
     refLayerIncrement.reset(0.4);
     refLayerIncrement.setDuration(120);
     refLayerIncrement.setRepeatType(PLAY_ONCE);
     refLayerIncrement.setCurve(EASE_IN_EASE_OUT);
     
-    maskIncrementHi = 0.005;
+    maskIncrementHi = 0.0005;
     maskIncrementLo = 0.002;
     refMaskIncrement.reset(0.01);
     refMaskIncrement.setDuration(120);
@@ -125,7 +125,7 @@ void animation::update(){
             wallMask.incrementTextureOffsetY(wallMaskIncrementY);
             wallMask.draw();
             ofSetColor(ofColor::white);
-            currentMaskWidth = ofMap(wallMaskScale.val(), wallMaskScaleLo, wallMaskScaleHi, -quarterWidth, quarterWidth);
+            currentMaskWidth = ofMap(wallMaskScale.val(), wallMaskScaleLo, wallMaskScaleHi, 0, quarterWidth);
             ofRect(0, 0, currentMaskWidth, height);
             ofRect(width, 0, -currentMaskWidth, height);
         }
