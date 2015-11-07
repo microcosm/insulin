@@ -49,7 +49,9 @@ void ofApp::update() {
     if(timerRunning) {
         animateWhenTimerFinished();
     }
-    bgOpacity.update(ofGetLastFrameTime());
+    if(ofGetFrameNum() > 0) {
+        bgOpacity.update(ofGetLastFrameTime());
+    }
     anim.update();
 }
 

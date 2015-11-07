@@ -185,8 +185,8 @@ void animation::keyPressed(int key) {
 }
 
 void animation::newBgValue(int _bloodGlucoseValue) {
+    cout << "Animation recieved new BG: " << _bloodGlucoseValue << endl;
     if(!testMode) {
-        cout << "Animation recieved new BG: " << _bloodGlucoseValue << endl;
         if(bloodGlucoseValue == -1) {
             bloodGlucoseValue = makeUsable(_bloodGlucoseValue);
             wallMaskScale.reset(ofMap(bloodGlucoseValue, bgLo, bgHi, wallMaskScaleLo, wallMaskScaleHi));
