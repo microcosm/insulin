@@ -7,9 +7,9 @@ void ofApp::setup() {
     bloodGlucoseValue = -1;
     font.loadFont("NovaMono.ttf", 120);
     newValueDetected = false;
-    delayBeforeAnimation = 9000;
+    delayBeforeAnimation = 45000;
     animationInSecs = 0.5;
-    animationOutSecs = 4.5;
+    animationOutSecs = 5.5;
 
     boxSize.x = 300;
     boxSize.y = 160;
@@ -49,13 +49,13 @@ void ofApp::update() {
     if(timerRunning) {
         animateWhenTimerFinished();
     }
-    bgOpacity.update(1.0f / 60.0f);
+    bgOpacity.update(ofGetLastFrameTime());
     anim.update();
 }
 
 void ofApp::draw() {
     anim.draw();
-    ofDrawBitmapString(ofToString(ofGetFrameRate()), 25, 25);
+    //ofDrawBitmapString(ofToString(ofGetFrameRate()), 25, 25);
     if(bloodGlucoseValue != -1) {
         ofSetColor(ofColor::white, bgOpacity.val());
         ofRect(bgBoxPosition.x, bgBoxPosition.y, boxSize.x, boxSize.y);
