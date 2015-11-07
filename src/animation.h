@@ -17,7 +17,12 @@ public:
     vector< vector<ofxTexturePlane> > masks;
     vector<ofxTexturePlane> layers, maskLoader;
     int numLayers, numMasksPerLayer;
-    float scale, opacity, increment, layerIncrement, maskIncrement;
+    float scale, opacity, increment;
+    float layerIncrement, maskIncrement;
+    float refLayerIncrement, refMaskIncrement;
+    float wallIncrementX, wallIncrementY, wallMaskIncrementY;
+    float refWallIncrementX, refWallIncrementY, refWallMaskIncrementY;
     
     float halfWidth;
+    unsigned long long timeSinceLastFrame;
 };

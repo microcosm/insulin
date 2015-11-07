@@ -6,8 +6,12 @@ void animation::setup(){
     wallMask.setup("wallMask.png", 0.3, TEXTURE_OFFSET__TOP__RIGHT_TO_CENTER);
     wall.setup("glass-1.png", 1.0, TEXTURE_OFFSET_TOP_LEFT);
 
-    layerIncrement = 0.005;
-    maskIncrement = 0.0002;
+    refLayerIncrement = 0.5;
+    refMaskIncrement = 0.02;
+    
+    refWallIncrementX = 0.2;
+    refWallIncrementY = -0.25;
+    refWallMaskIncrementY = 0.1;
     
     numLayers = 6;
     numMasksPerLayer = 2;
@@ -34,11 +38,13 @@ void animation::setup(){
 
 void animation::update(){
     ofSetColor(ofColor::white);
+    layerIncrement = refLayerIncrement * ofGetLastFrameTime();
+    maskIncrement = refMaskIncrement * ofGetLastFrameTime();
 
     for(int i = 0; i < numLayers; i++) {
         masker.beginLayer(i);
         {
-            ofSetColor(ofColor(ofColor::red));
+            ofSetColor(ofColor::red);
             increment = ofMap(i, 0, numLayers-1, layerIncrement, -layerIncrement);
             layers.at(i).incrementTextureOffsetY(increment);
             layers.at(i).draw();
@@ -59,9 +65,13 @@ void animation::update(){
     }
     
     //Walls
+    wallIncrementX = refWallIncrementX * ofGetLastFrameTime();
+    wallIncrementY = refWallIncrementY * ofGetLastFrameTime();
+    wallMaskIncrementY = refWallMaskIncrementY * ofGetLastFrameTime();
+    
     masker.beginLayer(numLayers);
     {
-        wall.incrementTextureOffset(0.002, -0.0025);
+        wall.incrementTextureOffset(wallIncrementX, wallIncrementY);
         //wall.incrementTextureScale(0.014);
         wall.draw(-halfWidth, 0);
         wall.draw(halfWidth, 0, TEXTURE_FLIP_VERTICAL);
@@ -71,7 +81,7 @@ void animation::update(){
     masker.beginMask(numLayers);
     {
         //wallMask.incrementTextureScale(0.0075);
-        wallMask.incrementTextureOffsetY(0.001);
+        wallMask.incrementTextureOffsetY(wallMaskIncrementY);
         wallMask.draw();
     }
     masker.endMask(numLayers);
