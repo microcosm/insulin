@@ -165,7 +165,7 @@ void animation::update(){
 }
 
 void animation::draw() {
-    if(bloodGlucoseValue > -1) {
+    if(bloodGlucoseValue > -1 || testMode) {
         ofSetColor(ofColor::red);
         layers.at(0).draw();
         masker.draw();
