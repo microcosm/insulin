@@ -1,6 +1,9 @@
 #include "animation.h"
 
 void animation::setup(float _width, float _height){
+    testMode = true;
+    testModeIncrement = 0.001;
+
     width = _width;
     height = _height;
     halfWidth = width * 0.5;
@@ -64,11 +67,17 @@ void animation::setup(float _width, float _height){
 }
 
 void animation::update(){
-    wallMaskScale.update(ofGetLastFrameTime());
-    refLayerIncrement.update(ofGetLastFrameTime());
-    refMaskIncrement.update(ofGetLastFrameTime());
+    if(testMode) {
+        wallMaskScale.reset(ofMap(sin(ofGetElapsedTimeMillis() * testModeIncrement), -1, 1, wallMaskScaleLo, wallMaskScaleHi));
+        refLayerIncrement.reset(ofMap(sin(ofGetElapsedTimeMillis() * testModeIncrement), -1, 1, layerIncrementLo, layerIncrementHi));
+        refMaskIncrement.reset(ofMap(sin(ofGetElapsedTimeMillis() * testModeIncrement), -1, 1, maskIncrementLo, maskIncrementHi));
+    } else {
+        wallMaskScale.update(ofGetLastFrameTime());
+        refLayerIncrement.update(ofGetLastFrameTime());
+        refMaskIncrement.update(ofGetLastFrameTime());
+    }
 
-    if(bloodGlucoseValue > -1) {
+    if(bloodGlucoseValue > -1 || testMode) {
         ofSetColor(ofColor::white);
         layerIncrement = refLayerIncrement.val() * ofGetLastFrameTime();
         maskIncrement = refMaskIncrement.val() * ofGetLastFrameTime();
@@ -125,12 +134,17 @@ void animation::update(){
     cout << wallMaskScale.val() << " " << refLayerIncrement.val() << " " << refMaskIncrement.val() << endl;
 }
 
-void animation::draw(){
+void animation::draw() {
     if(bloodGlucoseValue > -1) {
         ofSetColor(ofColor::red);
         layers.at(0).draw();
         masker.draw();
         masker.drawOverlay();
+    }
+
+    if(testMode) {
+        ofSetColor(ofColor::gray);
+        ofDrawBitmapString(ofToString(ofMap(sin(ofGetElapsedTimeMillis() * testModeIncrement), -1, 1, bgLo, bgHi)), 25, 100);
     }
 }
 
@@ -142,8 +156,10 @@ void animation::keyPressed(int key) {
 
 void animation::newBgValue(int _bloodGlucoseValue) {
     bloodGlucoseValue = _bloodGlucoseValue;
-    wallMaskScale.animateFromTo(wallMaskScale.val(), ofMap(bloodGlucoseValue, bgLo, bgHi, wallMaskScaleLo, wallMaskScaleHi));
-    refLayerIncrement.animateFromTo(refLayerIncrement.val(), ofMap(bloodGlucoseValue, bgLo, bgHi, layerIncrementLo, layerIncrementHi));
-    refMaskIncrement.animateFromTo(refMaskIncrement.val(), ofMap(bloodGlucoseValue, bgLo, bgHi, maskIncrementLo, maskIncrementHi));
-    cout << "New BG: " << bloodGlucoseValue << endl;
+    if(!testMode) {
+        wallMaskScale.animateFromTo(wallMaskScale.val(), ofMap(bloodGlucoseValue, bgLo, bgHi, wallMaskScaleLo, wallMaskScaleHi));
+        refLayerIncrement.animateFromTo(refLayerIncrement.val(), ofMap(bloodGlucoseValue, bgLo, bgHi, layerIncrementLo, layerIncrementHi));
+        refMaskIncrement.animateFromTo(refMaskIncrement.val(), ofMap(bloodGlucoseValue, bgLo, bgHi, maskIncrementLo, maskIncrementHi));
+        cout << "New BG: " << bloodGlucoseValue << endl;
+    }
 }

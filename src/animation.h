@@ -11,10 +11,10 @@ public:
     void keyPressed(int key);
     void newBgValue(int _bloodGlucoseValue);
     
+protected:
     ofxLayerMask masker;
     ofxTexturePlane wall, wallMask;
 
-    //Blood work
     int bloodGlucoseValue, bgLo, bgHi;
     ofxTexturePlane mask, layer;
     vector< vector<ofxTexturePlane> > masks;
@@ -35,4 +35,7 @@ public:
     
     float width, height, halfWidth, halfHeight, quarterWidth;
     unsigned long long timeSinceLastFrame;
+
+    bool testMode;
+    float testModeIncrement;
 };
