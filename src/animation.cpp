@@ -1,7 +1,7 @@
 #include "animation.h"
 
 void animation::setup(float _width, float _height){
-    testMode = false;
+    testMode = true;
     refTestModeIncrement = 0.00003;
 
     width = _width;

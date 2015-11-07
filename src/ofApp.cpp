@@ -6,6 +6,7 @@ void ofApp::setup() {
     //ofToggleFullscreen();
     bloodGlucoseValue = -1;
     font.loadFont("NovaMono.ttf", 120);
+    testModeFont.loadFont("NovaMono.ttf", 30);
     newValueDetected = false;
     delayBeforeAnimation = 154000;
     animationInSecs = 0.5;
@@ -72,6 +73,9 @@ void ofApp::draw() {
         ofRect(bgBoxPosition.x + boxBorderSize, bgBoxPosition.y + boxBorderSize, boxSize.x - boxBorderDouble, boxSize.y - boxBorderDouble);
         ofSetColor(ofColor::lightGray, bgOpacity.val());
         font.drawString(ofToString(bloodGlucoseValue), bgTextPosition.x, bgTextPosition.y);
+        if(anim.isInTestMode()) {
+            testModeFont.drawString("~ TEST MODE ~", bgTextPosition.x - 10, bgTextPosition.y - 174);
+        }
     }
 }
 

@@ -24,7 +24,7 @@ class ofApp: public ofBaseApp
     ofVec2f boxSize;
     float width, height;
     float halfWidth, boxBorderSize, boxBorderDouble;
-    ofTrueTypeFont font;
+    ofTrueTypeFont font, testModeFont;
     ofxAnimatableFloat bgOpacity;
     bool newValueDetected, timerRunning;
     unsigned long long timerStartedAt;
