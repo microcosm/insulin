@@ -29,16 +29,16 @@ void ofApp::setup() {
 
     bgOpacity.setRepeatType(PLAY_ONCE);
     bgOpacity.setCurve(EASE_IN_EASE_OUT);
-    //jsonParser.startThread(true, false);
+    jsonParser.startThread(true, false);
     anim.setup(width, height);
 }
 
 void ofApp::update() {
-    /*jsonParser.lock();
+    jsonParser.lock();
     bloodGlucoseValue = jsonParser.bloodGlucoseValue;
     newValueDetected = jsonParser.newValueDetected;
     jsonParser.newValueDetected = false;
-    jsonParser.unlock();*/
+    jsonParser.unlock();
     if(newValueDetected) {
         startTimer();
         bgOpacity.animateFromTo(0, 255);
@@ -54,7 +54,7 @@ void ofApp::update() {
 
 void ofApp::draw() {
     anim.draw();
-    //ofDrawBitmapString(ofToString(ofGetFrameRate()), 25, 25);
+    ofDrawBitmapString(ofToString(ofGetFrameRate()), 25, 25);
     if(bloodGlucoseValue != -1) {
         ofSetColor(ofColor::white, bgOpacity.val());
         ofRect(bgBoxPosition.x, bgBoxPosition.y, boxSize.x, boxSize.y);
