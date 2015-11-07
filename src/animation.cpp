@@ -2,7 +2,7 @@
 
 void animation::setup(float _width, float _height){
     testMode = true;
-    refTestModeIncrement = 0.00003;
+    refTestModeIncrement = 0.0001;
 
     width = _width;
     height = _height;
@@ -11,7 +11,7 @@ void animation::setup(float _width, float _height){
     quarterWidth = width * 0.25;
 
     bloodGlucoseValue = -1;
-    bgLo = 70; bgHi = 270;
+    bgLo = 70; bgHi = 275;
     
     wallMaskScaleLo = 0.4;
     wallMaskScaleHi = 0.15;
