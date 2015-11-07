@@ -40,6 +40,7 @@ void ofApp::update() {
     jsonParser.newValueDetected = false;
     jsonParser.unlock();
     if(newValueDetected) {
+        cout << "Value has changed." << endl;
         startTimer();
         bgOpacity.animateFromTo(0, 255);
         bgOpacity.setDuration(animationInSecs);
