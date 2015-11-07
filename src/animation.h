@@ -4,7 +4,7 @@
 class animation {
     
 public:
-    void setup();
+    void setup(float _width, float _height);
     void update();
     void draw();
     void keyPressed(int key);
@@ -23,6 +23,6 @@ public:
     float wallIncrementX, wallIncrementY, wallMaskIncrementY;
     float refWallIncrementX, refWallIncrementY, refWallMaskIncrementY;
     
-    float halfWidth;
+    float width, height, halfWidth, halfHeight;
     unsigned long long timeSinceLastFrame;
 };

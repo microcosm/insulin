@@ -1,8 +1,8 @@
 #include "ofApp.h"
 
 void ofApp::setup() {
-    //ofSetWindowShape(1600, 2560);
-    ofSetWindowShape(800, 1280);
+    width = 900; height = 1440;
+    ofSetWindowShape(width, height);
     bloodGlucoseValue = -1;
     font.loadFont("NovaMono.ttf", 120);
     newValueDetected = false;
@@ -19,17 +19,17 @@ void ofApp::setup() {
     bgBoxOffset.y = boxSize.y + 100;
 
     boxBorderDouble = boxBorderSize * 2;
-    halfWidth = ofGetWidth() * 0.5;
+    halfWidth = width * 0.5;
 
     bgTextPosition.x = halfWidth - bgTextOffset.x;
-    bgTextPosition.y = ofGetHeight() - bgTextOffset.y;
+    bgTextPosition.y = height - bgTextOffset.y;
     bgBoxPosition.x = halfWidth - bgBoxOffset.x;
-    bgBoxPosition.y = ofGetHeight() - bgBoxOffset.y;
+    bgBoxPosition.y = height - bgBoxOffset.y;
 
     bgOpacity.setRepeatType(PLAY_ONCE);
     bgOpacity.setCurve(EASE_IN_EASE_OUT);
     //jsonParser.startThread(true, false);
-    anim.setup();
+    anim.setup(width, height);
 }
 
 void ofApp::update() {

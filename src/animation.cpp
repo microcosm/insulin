@@ -1,10 +1,13 @@
 #include "animation.h"
 
-void animation::setup(){
-    halfWidth = ofGetWidth() * 0.5;
+void animation::setup(float _width, float _height){
+    width = _width;
+    height = _height;
+    halfWidth = width * 0.5;
+    halfHeight = width * 0.5;
 
-    wallMask.setup("wallMask.png", 0.3, TEXTURE_OFFSET__TOP__RIGHT_TO_CENTER);
-    wall.setup("glass-1.png", 1.0, TEXTURE_OFFSET_TOP_LEFT);
+    wallMask.setup("wallMask.png", width, height, 0.3, TEXTURE_OFFSET__TOP__RIGHT_TO_CENTER);
+    wall.setup("glass-1.png", width, height, 1.0, TEXTURE_OFFSET_TOP_LEFT);
 
     refLayerIncrement = 0.5;
     refMaskIncrement = 0.02;
@@ -15,9 +18,9 @@ void animation::setup(){
     
     numLayers = 6;
     numMasksPerLayer = 2;
-    masker.setup(numLayers + 1, ISOLATE_LAYERS);
+    masker.setup(width, height, numLayers + 1, ISOLATE_LAYERS);
     
-    layer.setup("glass-3.png");
+    layer.setup("glass-3.png", width, height);
     for(int i = 0; i < numLayers; i++) {
         scale = ofMap(i, 0, numLayers-1, 4, 2.5);
         layer.setTextureScale(scale);
@@ -27,7 +30,7 @@ void animation::setup(){
         
         maskLoader.clear();
         scale = ofMap(i, 0, numLayers-1, 6, 0.33);
-        mask.setup("tissue.png", scale, TEXTURE_OFFSET__MIDDLE__LEFT_TO_CENTER);
+        mask.setup("tissue.png", width, height, scale, TEXTURE_OFFSET__MIDDLE__LEFT_TO_CENTER);
         for(int j = 0; j < numMasksPerLayer; j++) {
             mask.setTextureOffsetY(ofRandom(2));
             maskLoader.push_back(mask);

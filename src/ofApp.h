@@ -22,6 +22,7 @@ class ofApp: public ofBaseApp
     ofVec2f bgTextPosition, bgTextOffset;
     ofVec2f bgBoxPosition, bgBoxOffset;
     ofVec2f boxSize;
+    float width, height;
     float halfWidth, boxBorderSize, boxBorderDouble;
     ofTrueTypeFont font;
     ofxAnimatableFloat bgOpacity;
