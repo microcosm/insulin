@@ -54,7 +54,7 @@ void ofApp::update() {
 
 void ofApp::draw() {
     anim.draw();
-    ofDrawBitmapString(ofToString(ofGetFrameRate()), 25, 25);
+    //ofDrawBitmapString(ofToString(ofGetFrameRate()), 25, 25);
     if(bloodGlucoseValue != -1) {
         ofSetColor(ofColor::white, bgOpacity.val());
         ofRect(bgBoxPosition.x, bgBoxPosition.y, boxSize.x, boxSize.y);
