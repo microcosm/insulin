@@ -28,16 +28,16 @@ void ofApp::setup() {
 
     bgOpacity.setRepeatType(PLAY_ONCE);
     bgOpacity.setCurve(EASE_IN_EASE_OUT);
-    jsonParser.startThread(true, false);
+    //jsonParser.startThread(true, false);
     anim.setup();
 }
 
 void ofApp::update() {
-    jsonParser.lock();
+    /*jsonParser.lock();
     bloodGlucoseValue = jsonParser.bloodGlucoseValue;
     newValueDetected = jsonParser.newValueDetected;
     jsonParser.newValueDetected = false;
-    jsonParser.unlock();
+    jsonParser.unlock();*/
     if(newValueDetected) {
         startTimer();
         bgOpacity.animateFromTo(0, 255);
