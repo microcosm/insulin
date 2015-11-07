@@ -11,10 +11,9 @@ void animation::setup(float _width, float _height){
     quarterWidth = width * 0.25;
 
     bloodGlucoseValue = -1;
-    bgLo = 70;
-    bgHi = 250;
+    bgLo = 70; bgHi = 250;
     
-    wallMaskScaleLo = 0.35;
+    wallMaskScaleLo = 0.4;
     wallMaskScaleHi = 0.15;
     wallMaskScale.reset(0.35);
     wallMaskScale.setDuration(120);
@@ -25,14 +24,14 @@ void animation::setup(float _width, float _height){
     wall.setup("glass-1.png", width, height, 1.0, TEXTURE_OFFSET_TOP_LEFT);
     
     //Blood speed
-    layerIncrementLo = 0.5;
+    layerIncrementLo = 0.3;
     layerIncrementHi = 0.05;
     refLayerIncrement.reset(0.4);
     refLayerIncrement.setDuration(120);
     refLayerIncrement.setRepeatType(PLAY_ONCE);
     refLayerIncrement.setCurve(EASE_IN_EASE_OUT);
     
-    maskIncrementLo = 0.002;
+    maskIncrementLo = 0.06;
     maskIncrementHi = 0.0005;
     refMaskIncrement.reset(0.01);
     refMaskIncrement.setDuration(120);
@@ -186,14 +185,24 @@ void animation::keyPressed(int key) {
 }
 
 void animation::newBgValue(int _bloodGlucoseValue) {
-    bloodGlucoseValue = _bloodGlucoseValue;
     if(!testMode) {
-        cout << "Animation recieved new BG: " << bloodGlucoseValue << endl;
-        wallMaskScale.animateFromTo(wallMaskScale.val(), ofMap(bloodGlucoseValue, bgLo, bgHi, wallMaskScaleLo, wallMaskScaleHi));
-        refLayerIncrement.animateFromTo(refLayerIncrement.val(), ofMap(bloodGlucoseValue, bgLo, bgHi, layerIncrementLo, layerIncrementHi));
-        refMaskIncrement.animateFromTo(refMaskIncrement.val(), ofMap(bloodGlucoseValue, bgLo, bgHi, maskIncrementLo, maskIncrementHi));
-        refWallIncrementX.animateFromTo(refWallIncrementX.val(), ofMap(bloodGlucoseValue, bgLo, bgHi, wallIncrementXLo, wallIncrementXHi));
-        refWallIncrementY.animateFromTo(refWallIncrementY.val(), ofMap(bloodGlucoseValue, bgLo, bgHi, wallIncrementYLo, wallIncrementYHi));
-        refWallMaskIncrementY.animateFromTo(refWallMaskIncrementY.val(), ofMap(bloodGlucoseValue, bgLo, bgHi, wallMaskIncrementYLo, wallMaskIncrementYHi));
+        cout << "Animation recieved new BG: " << _bloodGlucoseValue << endl;
+        if(bloodGlucoseValue == -1) {
+            bloodGlucoseValue = _bloodGlucoseValue;
+            wallMaskScale.reset(ofMap(bloodGlucoseValue, bgLo, bgHi, wallMaskScaleLo, wallMaskScaleHi));
+            refLayerIncrement.reset(ofMap(bloodGlucoseValue, bgLo, bgHi, layerIncrementLo, layerIncrementHi));
+            refMaskIncrement.reset(ofMap(bloodGlucoseValue, bgLo, bgHi, maskIncrementLo, maskIncrementHi));
+            refWallIncrementX.reset(ofMap(bloodGlucoseValue, bgLo, bgHi, wallIncrementXLo, wallIncrementXHi));
+            refWallIncrementY.reset(ofMap(bloodGlucoseValue, bgLo, bgHi, wallIncrementYLo, wallIncrementYHi));
+            refWallMaskIncrementY.reset(ofMap(bloodGlucoseValue, bgLo, bgHi, wallMaskIncrementYLo, wallMaskIncrementYHi));
+        } else {
+            bloodGlucoseValue = _bloodGlucoseValue;
+            wallMaskScale.animateFromTo(wallMaskScale.val(), ofMap(bloodGlucoseValue, bgLo, bgHi, wallMaskScaleLo, wallMaskScaleHi));
+            refLayerIncrement.animateFromTo(refLayerIncrement.val(), ofMap(bloodGlucoseValue, bgLo, bgHi, layerIncrementLo, layerIncrementHi));
+            refMaskIncrement.animateFromTo(refMaskIncrement.val(), ofMap(bloodGlucoseValue, bgLo, bgHi, maskIncrementLo, maskIncrementHi));
+            refWallIncrementX.animateFromTo(refWallIncrementX.val(), ofMap(bloodGlucoseValue, bgLo, bgHi, wallIncrementXLo, wallIncrementXHi));
+            refWallIncrementY.animateFromTo(refWallIncrementY.val(), ofMap(bloodGlucoseValue, bgLo, bgHi, wallIncrementYLo, wallIncrementYHi));
+            refWallMaskIncrementY.animateFromTo(refWallMaskIncrementY.val(), ofMap(bloodGlucoseValue, bgLo, bgHi, wallMaskIncrementYLo, wallMaskIncrementYHi));
+        }
     }
 }
