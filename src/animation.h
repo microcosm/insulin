@@ -23,7 +23,11 @@ protected:
     float scale, opacity, increment;
     float layerIncrement, maskIncrement;
     float wallIncrementX, wallIncrementY, wallMaskIncrementY;
-    float refWallIncrementX, refWallIncrementY, refWallMaskIncrementY;
+
+    ofxAnimatableFloat refWallIncrementX, refWallIncrementY, refWallMaskIncrementY;
+    float wallIncrementXLo, wallIncrementXHi;
+    float wallIncrementYLo, wallIncrementYHi;
+    float wallMaskIncrementYLo, wallMaskIncrementYHi;
 
     ofxAnimatableFloat wallMaskScale;
     float wallMaskScaleHi, wallMaskScaleLo;

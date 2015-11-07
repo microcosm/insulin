@@ -13,9 +13,9 @@ void animation::setup(float _width, float _height){
     bloodGlucoseValue = -1;
     bgLo = 70;
     bgHi = 250;
-
-    wallMaskScaleHi = 0.15;
+    
     wallMaskScaleLo = 0.35;
+    wallMaskScaleHi = 0.15;
     wallMaskScale.reset(0.35);
     wallMaskScale.setDuration(120);
     wallMaskScale.setRepeatType(PLAY_ONCE);
@@ -25,23 +25,41 @@ void animation::setup(float _width, float _height){
     wall.setup("glass-1.png", width, height, 1.0, TEXTURE_OFFSET_TOP_LEFT);
     
     //Blood speed
-    layerIncrementHi = 0.05;
     layerIncrementLo = 0.5;
+    layerIncrementHi = 0.05;
     refLayerIncrement.reset(0.4);
     refLayerIncrement.setDuration(120);
     refLayerIncrement.setRepeatType(PLAY_ONCE);
     refLayerIncrement.setCurve(EASE_IN_EASE_OUT);
     
-    maskIncrementHi = 0.0005;
     maskIncrementLo = 0.002;
+    maskIncrementHi = 0.0005;
     refMaskIncrement.reset(0.01);
     refMaskIncrement.setDuration(120);
     refMaskIncrement.setRepeatType(PLAY_ONCE);
     refMaskIncrement.setCurve(EASE_IN_EASE_OUT);
     
-    refWallIncrementX = 0.2;
-    refWallIncrementY = -0.25;
-    refWallMaskIncrementY = 0.1;
+    //Wall speed
+    wallIncrementXLo = 0.2;
+    wallIncrementXHi = 0.01;
+    refWallIncrementX.reset(0.1);
+    refWallIncrementX.setDuration(120);
+    refWallIncrementX.setRepeatType(PLAY_ONCE);
+    refWallIncrementX.setCurve(EASE_IN_EASE_OUT);
+
+    wallIncrementYLo = 0.35;
+    wallIncrementYHi = 0.06;
+    refWallIncrementY.reset(-0.1);
+    refWallIncrementY.setDuration(120);
+    refWallIncrementY.setRepeatType(PLAY_ONCE);
+    refWallIncrementY.setCurve(EASE_IN_EASE_OUT);
+    
+    wallMaskIncrementYLo = 0.1;
+    wallMaskIncrementYHi = 0.06;
+    refWallMaskIncrementY.reset(0.08);
+    refWallMaskIncrementY.setDuration(120);
+    refWallMaskIncrementY.setRepeatType(PLAY_ONCE);
+    refWallMaskIncrementY.setCurve(EASE_IN_EASE_OUT);
     
     numLayers = 6;
     numMasksPerLayer = 2;
@@ -71,10 +89,16 @@ void animation::update(){
         wallMaskScale.reset(ofMap(sin(ofGetElapsedTimeMillis() * testModeIncrement), -1, 1, wallMaskScaleLo, wallMaskScaleHi));
         refLayerIncrement.reset(ofMap(sin(ofGetElapsedTimeMillis() * testModeIncrement), -1, 1, layerIncrementLo, layerIncrementHi));
         refMaskIncrement.reset(ofMap(sin(ofGetElapsedTimeMillis() * testModeIncrement), -1, 1, maskIncrementLo, maskIncrementHi));
+        refWallIncrementX.reset(ofMap(sin(ofGetElapsedTimeMillis() * testModeIncrement), -1, 1, wallIncrementXLo, wallIncrementXHi));
+        refWallIncrementY.reset(ofMap(sin(ofGetElapsedTimeMillis() * testModeIncrement), -1, 1, wallIncrementYLo, wallIncrementYHi));
+        refWallMaskIncrementY.reset(ofMap(sin(ofGetElapsedTimeMillis() * testModeIncrement), -1, 1, wallMaskIncrementYLo, wallMaskIncrementYHi));
     } else {
         wallMaskScale.update(ofGetLastFrameTime());
         refLayerIncrement.update(ofGetLastFrameTime());
         refMaskIncrement.update(ofGetLastFrameTime());
+        refWallIncrementX.update(ofGetLastFrameTime());
+        refWallIncrementY.update(ofGetLastFrameTime());
+        refWallMaskIncrementY.update(ofGetLastFrameTime());
     }
 
     if(bloodGlucoseValue > -1 || testMode) {
@@ -106,9 +130,9 @@ void animation::update(){
         }
         
         //Walls
-        wallIncrementX = refWallIncrementX * ofGetLastFrameTime();
-        wallIncrementY = refWallIncrementY * ofGetLastFrameTime();
-        wallMaskIncrementY = refWallMaskIncrementY * ofGetLastFrameTime();
+        wallIncrementX = refWallIncrementX.val() * ofGetLastFrameTime();
+        wallIncrementY = refWallIncrementY.val() * ofGetLastFrameTime();
+        wallMaskIncrementY = refWallMaskIncrementY.val() * ofGetLastFrameTime();
         
         masker.beginLayer(numLayers);
         {
@@ -131,7 +155,7 @@ void animation::update(){
         }
         masker.endMask(numLayers);
     }
-    cout << wallMaskScale.val() << " " << refLayerIncrement.val() << " " << refMaskIncrement.val() << endl;
+    cout << wallMaskScale.val() << " " << refLayerIncrement.val() << " " << refMaskIncrement.val() << refWallIncrementX.val() << refWallIncrementY.val() << refWallMaskIncrementY.val() << endl;
 }
 
 void animation::draw() {
@@ -160,6 +184,9 @@ void animation::newBgValue(int _bloodGlucoseValue) {
         wallMaskScale.animateFromTo(wallMaskScale.val(), ofMap(bloodGlucoseValue, bgLo, bgHi, wallMaskScaleLo, wallMaskScaleHi));
         refLayerIncrement.animateFromTo(refLayerIncrement.val(), ofMap(bloodGlucoseValue, bgLo, bgHi, layerIncrementLo, layerIncrementHi));
         refMaskIncrement.animateFromTo(refMaskIncrement.val(), ofMap(bloodGlucoseValue, bgLo, bgHi, maskIncrementLo, maskIncrementHi));
+        refWallIncrementX.animateFromTo(refWallIncrementX.val(), ofMap(bloodGlucoseValue, bgLo, bgHi, wallIncrementXLo, wallIncrementXHi));
+        refWallIncrementY.animateFromTo(refWallIncrementY.val(), ofMap(bloodGlucoseValue, bgLo, bgHi, wallIncrementYLo, wallIncrementYHi));
+        refWallMaskIncrementY.animateFromTo(refWallMaskIncrementY.val(), ofMap(bloodGlucoseValue, bgLo, bgHi, wallMaskIncrementYLo, wallMaskIncrementYHi));
         cout << "New BG: " << bloodGlucoseValue << endl;
     }
 }
