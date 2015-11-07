@@ -3,6 +3,7 @@
 void ofApp::setup() {
     width = 900; height = 1440;
     ofSetWindowShape(width, height);
+    //ofToggleFullscreen();
     bloodGlucoseValue = -1;
     font.loadFont("NovaMono.ttf", 120);
     newValueDetected = false;
