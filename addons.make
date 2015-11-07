@@ -1,1 +1,4 @@
 ofxJSON
+ofxLayerMask
+ofxTexturePlane
+ofxAnimatable
