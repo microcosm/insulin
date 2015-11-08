@@ -3,9 +3,20 @@
 void ofApp::setup() {
     productionMode = false;
     testMode = false;
+
+    animationClassName = "animation";
     width = 900; height = 1440;
 
-    productionMode ? ofToggleFullscreen() : ofSetWindowShape(width, height);
+    ofSetLogLevel(OF_LOG_NOTICE);
+
+    if(productionMode) {
+        ofLogToFile("log.txt", true);
+        ofToggleFullscreen();
+    } else {
+        ofLogToConsole();
+        ofSetLogLevel(animationClassName, OF_LOG_VERBOSE);
+        ofSetWindowShape(width, height);
+    }
 
     bloodGlucoseValue = -1;
     font.loadFont("NovaMono.ttf", 120);
@@ -48,7 +59,6 @@ void ofApp::update() {
     jsonParser.newValueDetected = false;
     jsonParser.unlock();
     if(!testMode && newValueDetected) {
-        cout << "Value has changed." << endl;
         startTimer();
         bgOpacity.animateFromTo(0, 255);
         bgOpacity.setDuration(animationInSecs);

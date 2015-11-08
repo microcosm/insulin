@@ -18,22 +18,24 @@ class jsonParse : public ofThread {
 public:
     int bloodGlucoseValue = -1;
     bool newValueDetected = false;
+    string className = "jsonParse";
 protected:
     string lastId = "";
     string url = "https://andycgm.azurewebsites.net/api/v1/entries/sgv.json?find[dateString][$gte]=2015-08-28";
     ofxJSONElement response;
     Json::Value root, latestValidEntry;
+    bool localNewValueDetected;
 
     void threadedFunction() {
         while(isThreadRunning()) {
+            ofLogNotice(className) << "======> Thread awake. Total of " << ofGetElapsedTimeMillis() << "ms have elapsed.";
             if (response.open(url)) {
+                ofLogNotice(className) << "JSON received. Validating and parsing...";
                 root = (Json::Value) response;
-                cout << endl << "===========================================" << endl;
-                cout << "Time elapsed: " << ofGetElapsedTimeMillis() << endl << endl;
                 //printValueTree(root);
                 extractLatestValues(root);
             } else {
-                cout << "Couldn't open URL to retreive JSON";
+                ofLogWarning(className) << "Couldn't open URL to retreive JSON.";
             }
             sleep(20000);
         }
@@ -43,23 +45,23 @@ protected:
         if(extractLatestValidEntry(root)) {
             lock();
             bloodGlucoseValue = latestValidEntry["sgv"].asLargestInt();
-            newValueDetected = latestValidEntry["_id"].asString() != lastId;
+            newValueDetected = localNewValueDetected = latestValidEntry["_id"].asString() != lastId;
             lastId = latestValidEntry["_id"].asString();
             unlock();
+            ofLogNotice(className) << (localNewValueDetected ? "N" : "No n") << "ew reading detected.";
         }
     }
 
     bool extractLatestValidEntry(Json::Value& root) {
-        cout << "Validating top-level array... ";
-        if(!validateArray(root)) {
+        if(validateArray(root)) {
+            ofLogNotice(className) << "Root-level array is valid.";
+        } else {
             return false;
         }
-        cout << "valid." << endl;
         
         for(int i = 0; i < root.size(); i++) {
-            cout << "Validating entry " << i << "... ";
-            if(validateEntry(root[i])) {
-                cout << "valid." << endl;
+            if(validateEntry(root[i], i)) {
+                ofLogNotice(className) << "Entry " << i << " is valid. Assigning for use.";
                 latestValidEntry = root[i];
                 return true;
             }
@@ -69,31 +71,31 @@ protected:
 
     bool validateArray(Json::Value& root) {
         if(root.type() != Json::arrayValue) {
-            cout << "Expected array here, but got something else.";
+            ofLogNotice(className) << "Root-level array not found. Aborting.";
             return false;
         } else if(root.size() < 1) {
-            cout << "Expected at least one value from root - there are none.";
+            ofLogNotice(className) << "Found zero entries in root-level array. Aborting.";
             return false;
         }
         return true;
     }
 
-    bool validateEntry(Json::Value& object) {
+    bool validateEntry(Json::Value& object, int i) {
         vector<string> members(object.getMemberNames());
         if(!contains(members, "type")) {
-            cout << "doesn't contain required member 'type'." << endl;
+            ofLogNotice(className) << "Entry " << i << " doesn't contain required member 'type'.";
             return false;
         }
         if(!contains(members, "sgv")) {
-            cout << "doesn't contain required member 'sgv'." << endl;
+            ofLogNotice(className) << "Entry " << i << " doesn't contain required member 'sgv'.";
             return false;
         }
         if(object["type"].asString() != "sgv") {
-            cout << "member 'type' is '" << object["type"].asString() << "', not 'sgv'." << endl;
+            ofLogNotice(className) << "Entry " << i << " member 'type' is '" << object["type"].asString() << "', not 'sgv'.";
             return false;
         }
         if(object["sgv"].asLargestInt() <= 20 || object["sgv"].asLargestInt() >= 999) {
-            cout << "member 'sgv' is '" << object["sgv"].asLargestInt() << "', most likely a false reading." << endl;
+            ofLogNotice(className) << "Entry " << i << " member 'sgv' is '" << object["sgv"].asString() << "', most likely a false reading.";
             return false;
         }
         return true;
@@ -138,45 +140,45 @@ protected:
         }
         
         if (value.hasComment(Json::commentBefore)) {
-            cout << spaces << value.getComment(Json::commentBefore).c_str() << endl;
+            ofLogNotice(className) << spaces << value.getComment(Json::commentBefore).c_str();
         }
         
-        cout << spaces << path.c_str() << ": ";
+        ofLogNotice(className) << spaces << path.c_str() << ": ";
         
         switch (value.type()) {
             case Json::nullValue:
             {
-                cout << "NULL" << endl;
+                ofLogNotice(className) << "NULL";
                 break;
             }
             case Json::intValue:
             {
-                cout << "[int] " << Json::valueToString(value.asLargestInt()).c_str() << endl;
+                ofLogNotice(className) << "[int] " << Json::valueToString(value.asLargestInt()).c_str();
                 break;
             }
             case Json::uintValue:
             {
-                cout << "[uint] " << Json::valueToString(value.asLargestUInt()).c_str() << endl;
+                ofLogNotice(className) << "[uint] " << Json::valueToString(value.asLargestUInt()).c_str();
                 break;
             }
             case Json::realValue:
             {
-                cout << "[real] " << normalizeFloatingPointStr(value.asDouble()).c_str() << endl;
+                ofLogNotice(className) << "[real] " << normalizeFloatingPointStr(value.asDouble()).c_str();
                 break;
             }
             case Json::stringValue:
             {
-                cout << "[string] " << value.asString().c_str() << endl;
+                ofLogNotice(className) << "[string] " << value.asString().c_str();
                 break;
             }
             case Json::booleanValue:
             {
-                cout << "[boolean] " << (value.asBool() ? "true" : "false");
+                ofLogNotice(className) << "[boolean] " << (value.asBool() ? "true" : "false");
                 break;
             }
             case Json::arrayValue:
             {
-                cout << "[array] {" << endl;
+                ofLogNotice(className) << "[array] {";
                 int size = value.size();
                 for(int index = 0; index < size; ++index) {
                     static char buffer[16];
@@ -187,12 +189,12 @@ protected:
 #endif
                     printValueTree(value[index], buffer, depth + 1);
                 }
-                cout << spaces << "}" << endl;
+                ofLogNotice(className) << spaces << "}";
                 break;
             }
             case Json::objectValue:
             {
-                cout << "[object] {" << endl;
+                ofLogNotice(className) << "[object] {";
                 Json::Value::Members members(value.getMemberNames());
                 std::sort(members.begin(), members.end());
                 for (Json::Value::Members::iterator it = members.begin();
@@ -200,15 +202,15 @@ protected:
                     const std::string& name = *it;
                     printValueTree(value[name], name, depth + 1);
                 }
-                cout << spaces << "}" << endl;
+                ofLogNotice(className) << spaces << "}";
                 break;
             }
             default:
-                cout << spaces << "I don't understand, it's too complicated." << endl;
+                ofLogNotice(className) << spaces << "I don't understand, it's too complicated.";
         }
         
         if (value.hasComment(Json::commentAfter)) {
-            cout << spaces << value.getComment(Json::commentAfter).c_str() << endl;
+            ofLogNotice(className) << spaces << value.getComment(Json::commentAfter).c_str();
         }
     }
 };

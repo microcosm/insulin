@@ -41,6 +41,7 @@ apps/*
 *.cpp.hex
 */bin/*
 !*/bin/data/*
+/bin/data/log.txt
 
 #########################
 # IDE

@@ -1,6 +1,7 @@
 #include "animation.h"
 
 void animation::setup(float _width, float _height, bool _testMode){
+    className = "animation";
     testMode = _testMode;
     refTestModeIncrement = 0.0001;
 
@@ -157,12 +158,13 @@ void animation::update(){
         }
         masker.endMask(numLayers);
     }
-    cout << wallMaskScale.val() << " "
+    ofLogVerbose(className)
+         << wallMaskScale.val() << " "
          << refLayerIncrement.val() << " "
          << refMaskIncrement.val() << " "
          << refWallIncrementX.val() <<  " "
          << refWallIncrementY.val() <<  " "
-         << refWallMaskIncrementY.val() << endl;
+         << refWallMaskIncrementY.val();
 }
 
 void animation::draw() {
@@ -181,7 +183,7 @@ void animation::keyPressed(int key) {
 }
 
 void animation::newBgValue(int _bloodGlucoseValue) {
-    cout << "Animation recieved new BG: " << _bloodGlucoseValue << endl;
+    ofLogNotice(className) << "Recieved new value: " << _bloodGlucoseValue;
     if(!testMode) {
         if(bloodGlucoseValue == -1) {
             bloodGlucoseValue = makeUsable(_bloodGlucoseValue);
