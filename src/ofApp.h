@@ -16,6 +16,8 @@ class ofApp: public ofBaseApp
     void startTimer();
     void animateWhenTimerFinished();
 
+protected:
+    bool productionMode, testMode;
     jsonParse jsonParser;
     animation anim;
     int bloodGlucoseValue;

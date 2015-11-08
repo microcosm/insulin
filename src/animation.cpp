@@ -1,7 +1,7 @@
 #include "animation.h"
 
-void animation::setup(float _width, float _height){
-    testMode = true;
+void animation::setup(float _width, float _height, bool _testMode){
+    testMode = _testMode;
     refTestModeIncrement = 0.0001;
 
     width = _width;
@@ -210,10 +210,6 @@ int animation::makeUsable(int _bloodGlucoseValue) {
         return 270;
     }
     return _bloodGlucoseValue;
-}
-
-bool animation::isInTestMode() {
-    return testMode;
 }
 
 int animation::currentTestBg() {

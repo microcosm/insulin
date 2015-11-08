@@ -5,12 +5,11 @@
 class animation {
     
 public:
-    void setup(float _width, float _height);
+    void setup(float _width, float _height, bool _testMode);
     void update();
     void draw();
     void keyPressed(int key);
     void newBgValue(int _bloodGlucoseValue);
-    bool isInTestMode();
     int currentTestBg();
     
 protected:

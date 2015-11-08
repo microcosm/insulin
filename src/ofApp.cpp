@@ -1,12 +1,14 @@
 #include "ofApp.h"
 
 void ofApp::setup() {
+    productionMode = false;
+    testMode = false;
     width = 900; height = 1440;
-    ofSetWindowShape(width, height);
-    //ofToggleFullscreen();
+
+    productionMode ? ofToggleFullscreen() : ofSetWindowShape(width, height);
+
     bloodGlucoseValue = -1;
     font.loadFont("NovaMono.ttf", 120);
-    testModeFont.loadFont("NovaMono.ttf", 30);
     newValueDetected = false;
     delayBeforeAnimation = 154000;
     animationInSecs = 0.5;
@@ -31,8 +33,10 @@ void ofApp::setup() {
     bgOpacity.setRepeatType(PLAY_ONCE);
     bgOpacity.setCurve(EASE_IN_EASE_OUT);
     jsonParser.startThread(true, false);
-    anim.setup(width, height);
-    if(anim.isInTestMode()) {
+
+    anim.setup(width, height, testMode);
+    if(testMode) {
+        testModeFont.loadFont("NovaMono.ttf", 30);
         bgOpacity.reset(255);
     }
 }
@@ -43,7 +47,7 @@ void ofApp::update() {
     newValueDetected = jsonParser.newValueDetected;
     jsonParser.newValueDetected = false;
     jsonParser.unlock();
-    if(!anim.isInTestMode() && newValueDetected) {
+    if(!testMode && newValueDetected) {
         cout << "Value has changed." << endl;
         startTimer();
         bgOpacity.animateFromTo(0, 255);
@@ -63,7 +67,7 @@ void ofApp::update() {
 void ofApp::draw() {
     anim.draw();
     //ofDrawBitmapString(ofToString(ofGetFrameRate()), 25, 25);
-    if(anim.isInTestMode()) {
+    if(testMode) {
         bloodGlucoseValue = floor(anim.currentTestBg() * 0.1) * 10;
     }
     if(bloodGlucoseValue != -1) {
@@ -73,7 +77,7 @@ void ofApp::draw() {
         ofRect(bgBoxPosition.x + boxBorderSize, bgBoxPosition.y + boxBorderSize, boxSize.x - boxBorderDouble, boxSize.y - boxBorderDouble);
         ofSetColor(ofColor::lightGray, bgOpacity.val());
         font.drawString(ofToString(bloodGlucoseValue), bgTextPosition.x, bgTextPosition.y);
-        if(anim.isInTestMode()) {
+        if(testMode) {
             testModeFont.drawString("~ TEST MODE ~", bgTextPosition.x - 10, bgTextPosition.y - 174);
         }
     }
