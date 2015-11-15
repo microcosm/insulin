@@ -16,13 +16,14 @@ protected:
     int makeUsable(int _bloodGlucoseValue);
     string className;
     ofxLayerMask masker;
-    ofxTexturePlane wall, wallMask;
+    ofxTexturePlane wall, wallMask, hyper;
 
     int bloodGlucoseValue, bgLo, bgHi;
     ofxTexturePlane mask, layer;
     vector< vector<ofxTexturePlane> > masks;
     vector<ofxTexturePlane> layers, maskLoader;
-    int numLayers, numMasksPerLayer;
+    int numBloodLayers, numMasksPerBloodLayer, numOverlayLayers;
+    int overlayLayer1, overlayLayer2;
     float scale, opacity, increment;
     float layerIncrement, maskIncrement;
     float wallIncrementX, wallIncrementY, wallMaskIncrementY;
@@ -39,6 +40,10 @@ protected:
     ofxAnimatableFloat refLayerIncrement, refMaskIncrement;
     float layerIncrementLo, layerIncrementHi;
     float maskIncrementLo, maskIncrementHi;
+
+    ofxAnimatableFloat refOverlayIntensity, refOverlayAlpha;
+    float overlayIntensityLo, overlayIntensityHi;
+    float overlayAlphaLo, overlayAlphaHi;
     
     float width, height, halfWidth, halfHeight, quarterWidth;
     unsigned long long timeSinceLastFrame;

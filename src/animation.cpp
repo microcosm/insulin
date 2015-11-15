@@ -23,6 +23,7 @@ void animation::setup(float _width, float _height, bool _testMode){
 
     wallMask.setup("wallMask.png", width, height, wallMaskScale.val(), TEXTURE_OFFSET__TOP__RIGHT_TO_CENTER);
     wall.setup("glass-1.png", width, height, 1.0, TEXTURE_OFFSET_TOP_LEFT);
+    hyper.setup("glass-4.png", width, height, 1.0, TEXTURE_OFFSET_MIDDLE_CENTER);
     
     //Blood speed
     layerIncrementLo = 0.3;
@@ -60,23 +61,42 @@ void animation::setup(float _width, float _height, bool _testMode){
     refWallMaskIncrementY.setDuration(120);
     refWallMaskIncrementY.setRepeatType(PLAY_ONCE);
     refWallMaskIncrementY.setCurve(EASE_IN_EASE_OUT);
-    
-    numLayers = 6;
-    numMasksPerLayer = 2;
-    masker.setup(width, height, numLayers + 1, ISOLATE_LAYERS);
+
+    //Overlay
+    overlayIntensityLo = -1.5;
+    overlayIntensityHi = 0.92;
+    refOverlayIntensity.reset(1.2);
+    refOverlayIntensity.setDuration(120);
+    refOverlayIntensity.setRepeatType(PLAY_ONCE);
+    refOverlayIntensity.setCurve(EASE_IN_EASE_OUT);
+
+    overlayAlphaLo = -400;
+    overlayAlphaHi = 400;
+    refOverlayAlpha.reset(0.01);
+    refOverlayAlpha.setDuration(120);
+    refOverlayAlpha.setRepeatType(PLAY_ONCE);
+    refOverlayAlpha.setCurve(EASE_IN_EASE_OUT);
+
+    //Masks and layers
+    numBloodLayers = 6;
+    numMasksPerBloodLayer = 2;
+    numOverlayLayers = 2;
+    overlayLayer1 = numBloodLayers;
+    overlayLayer2 = numBloodLayers + 1;
+    masker.setup(width, height, numBloodLayers + numOverlayLayers, ISOLATE_LAYERS);
     
     layer.setup("glass-3.png", width, height);
-    for(int i = 0; i < numLayers; i++) {
-        scale = ofMap(i, 0, numLayers-1, 4, 2.5);
+    for(int i = 0; i < numBloodLayers; i++) {
+        scale = ofMap(i, 0, numBloodLayers-1, 4, 2.5);
         layer.setTextureScale(scale);
         layer.setTextureOffset(i % 2 == 0 ? TEXTURE_OFFSET__MIDDLE__LEFT_TO_CENTER : TEXTURE_OFFSET__MIDDLE__RIGHT_TO_CENTER);
         layer.setTextureOffsetY(ofRandom(2));
         layers.push_back(layer);
         
         maskLoader.clear();
-        scale = ofMap(i, 0, numLayers-1, 6, 0.33);
+        scale = ofMap(i, 0, numBloodLayers-1, 6, 0.33);
         mask.setup("tissue.png", width, height, scale, TEXTURE_OFFSET__MIDDLE__LEFT_TO_CENTER);
-        for(int j = 0; j < numMasksPerLayer; j++) {
+        for(int j = 0; j < numMasksPerBloodLayer; j++) {
             mask.setTextureOffsetY(ofRandom(2));
             maskLoader.push_back(mask);
         }
@@ -93,6 +113,8 @@ void animation::update(){
         refWallIncrementX.reset(ofMap(sinTestModeIncrement, -1, 1, wallIncrementXLo, wallIncrementXHi));
         refWallIncrementY.reset(ofMap(sinTestModeIncrement, -1, 1, wallIncrementYLo, wallIncrementYHi));
         refWallMaskIncrementY.reset(ofMap(sinTestModeIncrement, -1, 1, wallMaskIncrementYLo, wallMaskIncrementYHi));
+        refOverlayIntensity.reset(ofMap(sinTestModeIncrement, -1, 1, overlayIntensityLo, overlayIntensityHi));
+        refOverlayAlpha.reset(ofMap(sinTestModeIncrement, -1, 1, overlayAlphaLo, overlayAlphaHi));
     } else {
         if(ofGetFrameNum() > 0) {
             wallMaskScale.update(ofGetLastFrameTime());
@@ -101,6 +123,8 @@ void animation::update(){
             refWallIncrementX.update(ofGetLastFrameTime());
             refWallIncrementY.update(ofGetLastFrameTime());
             refWallMaskIncrementY.update(ofGetLastFrameTime());
+            refOverlayIntensity.update(ofGetLastFrameTime());
+            refOverlayAlpha.update(ofGetLastFrameTime());
         }
     }
 
@@ -109,11 +133,11 @@ void animation::update(){
         layerIncrement = refLayerIncrement.val() * ofGetLastFrameTime();
         maskIncrement = refMaskIncrement.val() * ofGetLastFrameTime();
 
-        for(int i = 0; i < numLayers; i++) {
+        for(int i = 0; i < numBloodLayers; i++) {
             masker.beginLayer(i);
             {
                 ofSetColor(ofColor::red);
-                increment = ofMap(i, 0, numLayers-1, layerIncrement, -layerIncrement);
+                increment = ofMap(i, 0, numBloodLayers-1, layerIncrement, -layerIncrement);
                 layers.at(i).incrementTextureOffsetY(increment);
                 layers.at(i).draw();
             }
@@ -123,8 +147,8 @@ void animation::update(){
             {
                 ofSetColor(ofColor::white);
                 ofBackground(ofColor::white);
-                for(int j = 0; j < numMasksPerLayer; j++) {
-                    increment = (j+1) * ofMap(i, 0, numLayers-1, maskIncrement, -maskIncrement);
+                for(int j = 0; j < numMasksPerBloodLayer; j++) {
+                    increment = (j+1) * ofMap(i, 0, numBloodLayers-1, maskIncrement, -maskIncrement);
                     masks.at(i).at(j).incrementTextureOffsetY(increment);
                     masks.at(i).at(j).draw();
                 }
@@ -137,16 +161,16 @@ void animation::update(){
         wallIncrementY = refWallIncrementY.val() * ofGetLastFrameTime();
         wallMaskIncrementY = refWallMaskIncrementY.val() * ofGetLastFrameTime();
         
-        masker.beginLayer(numLayers);
+        masker.beginLayer(overlayLayer1);
         {
             wall.incrementTextureOffset(wallIncrementX, wallIncrementY);
             //wall.incrementTextureScale(0.014);
             wall.draw(-halfWidth, 0);
             wall.draw(halfWidth, 0, TEXTURE_FLIP_VERTICAL);
         }
-        masker.endLayer(numLayers);
+        masker.endLayer(overlayLayer1);
         
-        masker.beginMask(numLayers);
+        masker.beginMask(overlayLayer1);
         {
             wallMask.setTextureScale(wallMaskScale.val());
             wallMask.incrementTextureOffsetY(wallMaskIncrementY);
@@ -156,7 +180,28 @@ void animation::update(){
             ofRect(0, 0, currentMaskWidth, height);
             ofRect(width, 0, -currentMaskWidth, height);
         }
-        masker.endMask(numLayers);
+        masker.endMask(overlayLayer1);
+
+        //Overlay
+        masker.beginLayer(overlayLayer2);
+        {
+            masker.drawLayers(0, overlayLayer1);
+        }
+        masker.endLayer(overlayLayer2);
+
+        masker.beginMask(overlayLayer2);
+        {
+            ofBackground(ofColor::white);
+            if(ofRandom(1) > refOverlayIntensity.val()) {
+                hyper.setTexturePosition(ofRandom(2), ofRandom(2));
+                hyper.setTextureScale(ofRandom(3.5, 7.5));
+                layers.at(0).setTextureScale(ofRandom(0.3, 10.0));
+            }
+
+            ofSetColor(ofColor::white, refOverlayAlpha.val());
+            hyper.draw();
+        }
+        masker.endMask(overlayLayer2);
     }
     ofLogVerbose(className)
          << wallMaskScale.val() << " "
@@ -169,9 +214,14 @@ void animation::update(){
 
 void animation::draw() {
     if(bloodGlucoseValue > -1 || testMode) {
-        ofSetColor(ofColor::red);
+        if(refOverlayAlpha.val() > 0) {
+            ofSetColor(170, 255, 255);
+        } else {
+            ofSetColor(ofColor::red);
+        }
         layers.at(0).draw();
-        masker.draw();
+
+        masker.drawLayer(overlayLayer2);
         masker.drawOverlay();
     }
 }
@@ -193,6 +243,8 @@ void animation::newBgValue(int _bloodGlucoseValue) {
             refWallIncrementX.reset(ofMap(bloodGlucoseValue, bgLo, bgHi, wallIncrementXLo, wallIncrementXHi));
             refWallIncrementY.reset(ofMap(bloodGlucoseValue, bgLo, bgHi, wallIncrementYLo, wallIncrementYHi));
             refWallMaskIncrementY.reset(ofMap(bloodGlucoseValue, bgLo, bgHi, wallMaskIncrementYLo, wallMaskIncrementYHi));
+            refOverlayIntensity.reset(ofMap(bloodGlucoseValue, bgLo, bgHi, overlayIntensityLo, overlayIntensityHi));
+            refOverlayAlpha.reset(ofMap(bloodGlucoseValue, bgLo, bgHi, overlayAlphaLo, overlayAlphaHi));
         } else {
             bloodGlucoseValue = makeUsable(_bloodGlucoseValue);
             wallMaskScale.animateFromTo(wallMaskScale.val(), ofMap(bloodGlucoseValue, bgLo, bgHi, wallMaskScaleLo, wallMaskScaleHi));
@@ -201,6 +253,8 @@ void animation::newBgValue(int _bloodGlucoseValue) {
             refWallIncrementX.animateFromTo(refWallIncrementX.val(), ofMap(bloodGlucoseValue, bgLo, bgHi, wallIncrementXLo, wallIncrementXHi));
             refWallIncrementY.animateFromTo(refWallIncrementY.val(), ofMap(bloodGlucoseValue, bgLo, bgHi, wallIncrementYLo, wallIncrementYHi));
             refWallMaskIncrementY.animateFromTo(refWallMaskIncrementY.val(), ofMap(bloodGlucoseValue, bgLo, bgHi, wallMaskIncrementYLo, wallMaskIncrementYHi));
+            refOverlayIntensity.animateFromTo(refOverlayIntensity.val(), ofMap(bloodGlucoseValue, bgLo, bgHi, overlayIntensityLo, overlayIntensityHi));
+            refOverlayAlpha.animateFromTo(refOverlayAlpha.val(), ofMap(bloodGlucoseValue, bgLo, bgHi, overlayAlphaLo, overlayAlphaHi));
         }
     }
 }
