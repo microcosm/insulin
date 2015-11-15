@@ -12,10 +12,10 @@ void animation::setup(float _width, float _height, bool _testMode){
     quarterWidth = width * 0.25;
 
     bloodGlucoseValue = -1;
-    bgLo = 70; bgHi = 275;
+    bgLo = 40; bgHi = 275;
     
-    wallMaskScaleLo = 0.4;
-    wallMaskScaleHi = 0.15;
+    wallMaskScaleLo = 0.45;
+    wallMaskScaleHi = 0.06;
     wallMaskScale.reset(0.35);
     wallMaskScale.setDuration(120);
     wallMaskScale.setRepeatType(PLAY_ONCE);
@@ -152,7 +152,7 @@ void animation::update(){
             wallMask.incrementTextureOffsetY(wallMaskIncrementY);
             wallMask.draw();
             ofSetColor(ofColor::white);
-            currentMaskWidth = ofMap(wallMaskScale.val(), wallMaskScaleLo, wallMaskScaleHi, 0, quarterWidth);
+            currentMaskWidth = ofMap(wallMaskScale.val(), wallMaskScaleLo, wallMaskScaleHi, -190, 370);
             ofRect(0, 0, currentMaskWidth, height);
             ofRect(width, 0, -currentMaskWidth, height);
         }

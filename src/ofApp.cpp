@@ -2,7 +2,7 @@
 
 void ofApp::setup() {
     productionMode = false;
-    testMode = false;
+    testMode = true;
 
     animationClassName = "animation";
     width = 900; height = 1440;
@@ -14,7 +14,7 @@ void ofApp::setup() {
         ofToggleFullscreen();
     } else {
         ofLogToConsole();
-        ofSetLogLevel(animationClassName, OF_LOG_VERBOSE);
+        ofSetLogLevel(animationClassName, OF_LOG_NOTICE);
         ofSetWindowShape(width, height);
     }
 
