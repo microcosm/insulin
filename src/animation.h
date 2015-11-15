@@ -16,7 +16,8 @@ protected:
     int makeUsable(int _bloodGlucoseValue);
     string className;
     ofxLayerMask masker;
-    ofxTexturePlane wall, wallMask, hyper;
+    ofxTexturePlane wall, wallMask, hyper, hyperMask;
+    int hyperAlpha;
 
     int bloodGlucoseValue, bgLo, bgHi;
     ofxTexturePlane mask, layer;
