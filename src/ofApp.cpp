@@ -76,7 +76,10 @@ void ofApp::update() {
 
 void ofApp::draw() {
     anim.draw();
-    //ofDrawBitmapString(ofToString(ofGetFrameRate()), 25, 25);
+    if(!productionMode) {
+        ofSetColor(ofColor::white);
+        ofDrawBitmapString(ofToString(ofGetFrameRate()), 25, 25);
+    }
     if(testMode) {
         bloodGlucoseValue = floor(anim.currentTestBg() * 0.1) * 10;
     }
