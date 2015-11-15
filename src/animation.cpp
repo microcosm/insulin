@@ -199,9 +199,9 @@ void animation::update(){
         } else {
             framesSinceOverlayReset++;
             hyperAlpha -= 5;
-            hyper.incrementTextureScale(-0.02);
+            hyper.incrementTextureScale(0.02);
             hyper.incrementTextureOffsetY(0.0003);
-            hyperMask.incrementTextureScale(-0.01);
+            hyperMask.incrementTextureScale(0.03);
             hyperMask.incrementTextureOffsetY(-0.0003);
         }
 
