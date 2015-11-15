@@ -221,14 +221,6 @@ void animation::update(){
                 hyper.draw();
             }
             masker.endLayer(overlayLayer2);
-
-            masker.beginMask(overlayLayer2);
-            {
-                ofBackground(ofColor::black);
-                ofSetColor(ofColor::white, refOverlayAlpha.val());
-                hyperMask.draw();
-            }
-            masker.endMask(overlayLayer2);
         } else {
             //Animate hypo
             if(ofGetElapsedTimeMillis() > timeOfLastBeat + timeBetweenBeats) {
@@ -246,15 +238,22 @@ void animation::update(){
                 ofBackground(ofColor(255, 245, 219));
             }
             masker.endLayer(overlayLayer2);
-
-            masker.beginMask(overlayLayer2);
-            {
-                ofBackground(ofColor::black);
-                ofSetColor(ofColor(ofColor::white, beatAlpha.val()));
-                ofRect(0, 0, width, height);
-            }
-            masker.endMask(overlayLayer2);
         }
+
+        //Draw hypo and hyper masks
+        masker.beginMask(overlayLayer2);
+        {
+            if(bloodGlucoseValue > bgHypo) {
+                ofBackground(ofColor::black);
+                ofSetColor(ofColor::white, refOverlayAlpha.val());
+                hyperMask.draw();
+            }
+
+            ofBackground(ofColor::black);
+            ofSetColor(ofColor(ofColor::white, beatAlpha.val()));
+            ofRect(0, 0, width, height);
+        }
+        masker.endMask(overlayLayer2);
     }
     ofLogVerbose(className)
          << wallMaskScale.val() << " "
