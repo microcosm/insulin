@@ -110,7 +110,7 @@ void animation::setup(float _width, float _height, bool _testMode){
 
 void animation::update(){
     if(testMode) {
-        sinTestModeIncrement = sin(ofGetElapsedTimeMillis() * refTestModeIncrement);
+        sinTestModeIncrement = sin((30000+ofGetElapsedTimeMillis()) * refTestModeIncrement);
         wallMaskScale.reset(ofMap(sinTestModeIncrement, -1, 1, wallMaskScaleLo, wallMaskScaleHi));
         refLayerIncrement.reset(ofMap(sinTestModeIncrement, -1, 1, layerIncrementLo, layerIncrementHi));
         refMaskIncrement.reset(ofMap(sinTestModeIncrement, -1, 1, maskIncrementLo, maskIncrementHi));
@@ -167,6 +167,7 @@ void animation::update(){
         
         masker.beginLayer(overlayLayer1);
         {
+            ofSetColor(ofColor::white, (refOverlayAlpha.val() + 340) * 3);
             wall.incrementTextureOffset(wallIncrementX, wallIncrementY);
             //wall.incrementTextureScale(0.014);
             wall.draw(-halfWidth, 0);
