@@ -2,7 +2,7 @@
 
 void ofApp::setup() {
     productionMode = false;
-    testMode = true;
+    testMode = false;
 
     animationClassName = "animation";
     width = 900; height = 1440;

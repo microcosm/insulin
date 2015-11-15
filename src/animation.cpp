@@ -12,7 +12,8 @@ void animation::setup(float _width, float _height, bool _testMode){
     quarterWidth = width * 0.25;
 
     bloodGlucoseValue = -1;
-    bgLo = 40; bgHypo = 75; bgHi = 275;
+    bgLo = 40; bgHi = 275;
+    bgHypo = 75; bgHyper = 165;
     
     wallMaskScaleLo = 0.45;
     wallMaskScaleHi = 0.06;
@@ -30,7 +31,6 @@ void animation::setup(float _width, float _height, bool _testMode){
     framesSinceOverlayReset = 0;
     framesBeforeRepeat = 20;
     timeOfLastBeat = 0;
-    timeBetweenBeats = 1000;
     beatAlpha.reset(0);
     beatAlpha.setCurve(LINEAR);
     beatAlpha.setRepeatType(PLAY_ONCE);
@@ -116,7 +116,7 @@ void animation::setup(float _width, float _height, bool _testMode){
 
 void animation::update(){
     if(testMode) {
-        sinTestModeIncrement = sin((36000+ofGetElapsedTimeMillis()) * refTestModeIncrement);
+        sinTestModeIncrement = sin(ofGetElapsedTimeMillis() * refTestModeIncrement);
         bloodGlucoseValue = ofMap(sinTestModeIncrement, -1, 1, bgLo, bgHi);
         wallMaskScale.reset(ofMap(sinTestModeIncrement, -1, 1, wallMaskScaleLo, wallMaskScaleHi));
         refLayerIncrement.reset(ofMap(sinTestModeIncrement, -1, 1, layerIncrementLo, layerIncrementHi));
@@ -196,7 +196,7 @@ void animation::update(){
         masker.endMask(overlayLayer1);
 
         //Overlays
-        if(bloodGlucoseValue > bgHypo) {
+        if(bloodGlucoseValue > bgHyper) {
             //Animate hyper
             if(refOverlayIntensity.val() < ofRandom(1) && framesSinceOverlayReset > framesBeforeRepeat) {
                 hyperMask.setTexturePosition(ofRandom(2), ofRandom(2));
@@ -221,21 +221,24 @@ void animation::update(){
                 hyper.draw();
             }
             masker.endLayer(overlayLayer2);
-        } else {
+
+        } else if (bloodGlucoseValue < bgHypo) {
             //Animate hypo
+            timeBetweenBeats = ofMap(bloodGlucoseValue, bgLo, bgHi, 500, 2700);
+            beatDuration = ofMap(bloodGlucoseValue, bgLo, bgHi, 0.8, -1.0);
             if(ofGetElapsedTimeMillis() > timeOfLastBeat + timeBetweenBeats) {
                 timeOfLastBeat = ofGetElapsedTimeMillis();
                 beatAlpha.setDuration(0.05);
                 beatAlpha.animateFromTo(0, 255);
             } else if(beatAlpha.val() == 255) {
-                beatAlpha.setDuration(0.4);
+                beatAlpha.setDuration(beatDuration);
                 beatAlpha.animateFromTo(255, 0);
             }
 
             //Draw hypo
             masker.beginLayer(overlayLayer2);
             {
-                ofBackground(ofColor(255, 245, 219));
+                ofBackground(ofColor::red);
             }
             masker.endLayer(overlayLayer2);
         }
@@ -243,18 +246,19 @@ void animation::update(){
         //Draw hypo and hyper masks
         masker.beginMask(overlayLayer2);
         {
-            if(bloodGlucoseValue > bgHypo) {
+            if(bloodGlucoseValue > bgHyper) {
                 ofBackground(ofColor::black);
                 ofSetColor(ofColor::white, refOverlayAlpha.val());
                 hyperMask.draw();
+            } else {
+                ofBackground(ofColor::black);
+                ofSetColor(ofColor(ofColor::white, beatAlpha.val()));
+                ofRect(0, 0, width, height);
             }
-
-            ofBackground(ofColor::black);
-            ofSetColor(ofColor(ofColor::white, beatAlpha.val()));
-            ofRect(0, 0, width, height);
         }
         masker.endMask(overlayLayer2);
     }
+
     ofLogVerbose(className)
          << wallMaskScale.val() << " "
          << refLayerIncrement.val() << " "

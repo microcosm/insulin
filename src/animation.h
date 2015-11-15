@@ -20,9 +20,9 @@ protected:
     int hypoAlpha, hyperAlpha;
     int framesSinceOverlayReset, framesBeforeRepeat;
     unsigned long long timeOfLastBeat;
-    int timeBetweenBeats;
+    float timeBetweenBeats, beatDuration;
 
-    int bloodGlucoseValue, bgLo, bgHi, bgHypo;
+    int bloodGlucoseValue, bgLo, bgHi, bgHypo, bgHyper;
     ofxTexturePlane mask, layer;
     vector< vector<ofxTexturePlane> > masks;
     vector<ofxTexturePlane> layers, maskLoader;
