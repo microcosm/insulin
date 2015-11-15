@@ -17,9 +17,12 @@ protected:
     string className;
     ofxLayerMask masker;
     ofxTexturePlane wall, wallMask, hyper, hyperMask;
-    int hyperAlpha, framesSinceOverlayReset, framesBeforeRepeat;
+    int hypoAlpha, hyperAlpha;
+    int framesSinceOverlayReset, framesBeforeRepeat;
+    unsigned long long timeOfLastBeat;
+    int timeBetweenBeats;
 
-    int bloodGlucoseValue, bgLo, bgHi;
+    int bloodGlucoseValue, bgLo, bgHi, bgHypo;
     ofxTexturePlane mask, layer;
     vector< vector<ofxTexturePlane> > masks;
     vector<ofxTexturePlane> layers, maskLoader;
@@ -41,10 +44,12 @@ protected:
     ofxAnimatableFloat refLayerIncrement, refMaskIncrement;
     float layerIncrementLo, layerIncrementHi;
     float maskIncrementLo, maskIncrementHi;
-
+    
     ofxAnimatableFloat refOverlayIntensity, refOverlayAlpha;
     float overlayIntensityLo, overlayIntensityHi;
     float overlayAlphaLo, overlayAlphaHi;
+    
+    ofxAnimatableFloat beatAlpha;
     
     float width, height, halfWidth, halfHeight, quarterWidth;
     unsigned long long timeSinceLastFrame;

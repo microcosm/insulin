@@ -12,7 +12,7 @@ void animation::setup(float _width, float _height, bool _testMode){
     quarterWidth = width * 0.25;
 
     bloodGlucoseValue = -1;
-    bgLo = 40; bgHi = 275;
+    bgLo = 40; bgHypo = 75; bgHi = 275;
     
     wallMaskScaleLo = 0.45;
     wallMaskScaleHi = 0.06;
@@ -25,9 +25,15 @@ void animation::setup(float _width, float _height, bool _testMode){
     wall.setup("glass-1.png", width, height, 1.0, TEXTURE_OFFSET_TOP_LEFT);
     hyper.setup("glass-3.png", width, height, 1.0, TEXTURE_OFFSET_MIDDLE_CENTER);
     hyperMask.setup("glass-4.png", width, height, 1.0, TEXTURE_OFFSET_MIDDLE_CENTER);
+    hypoAlpha = 0;
     hyperAlpha = 255;
     framesSinceOverlayReset = 0;
     framesBeforeRepeat = 20;
+    timeOfLastBeat = 0;
+    timeBetweenBeats = 1000;
+    beatAlpha.reset(0);
+    beatAlpha.setCurve(LINEAR);
+    beatAlpha.setRepeatType(PLAY_ONCE);
     
     //Blood speed
     layerIncrementLo = 0.3;
@@ -110,7 +116,8 @@ void animation::setup(float _width, float _height, bool _testMode){
 
 void animation::update(){
     if(testMode) {
-        sinTestModeIncrement = sin((30000+ofGetElapsedTimeMillis()) * refTestModeIncrement);
+        sinTestModeIncrement = sin((36000+ofGetElapsedTimeMillis()) * refTestModeIncrement);
+        bloodGlucoseValue = ofMap(sinTestModeIncrement, -1, 1, bgLo, bgHi);
         wallMaskScale.reset(ofMap(sinTestModeIncrement, -1, 1, wallMaskScaleLo, wallMaskScaleHi));
         refLayerIncrement.reset(ofMap(sinTestModeIncrement, -1, 1, layerIncrementLo, layerIncrementHi));
         refMaskIncrement.reset(ofMap(sinTestModeIncrement, -1, 1, maskIncrementLo, maskIncrementHi));
@@ -119,18 +126,17 @@ void animation::update(){
         refWallMaskIncrementY.reset(ofMap(sinTestModeIncrement, -1, 1, wallMaskIncrementYLo, wallMaskIncrementYHi));
         refOverlayIntensity.reset(ofMap(sinTestModeIncrement, -1, 1, overlayIntensityLo, overlayIntensityHi));
         refOverlayAlpha.reset(ofMap(sinTestModeIncrement, -1, 1, overlayAlphaLo, overlayAlphaHi));
-    } else {
-        if(ofGetFrameNum() > 0) {
-            wallMaskScale.update(ofGetLastFrameTime());
-            refLayerIncrement.update(ofGetLastFrameTime());
-            refMaskIncrement.update(ofGetLastFrameTime());
-            refWallIncrementX.update(ofGetLastFrameTime());
-            refWallIncrementY.update(ofGetLastFrameTime());
-            refWallMaskIncrementY.update(ofGetLastFrameTime());
-            refOverlayIntensity.update(ofGetLastFrameTime());
-            refOverlayAlpha.update(ofGetLastFrameTime());
-        }
+    } else if(ofGetFrameNum() > 0) {
+        wallMaskScale.update(ofGetLastFrameTime());
+        refLayerIncrement.update(ofGetLastFrameTime());
+        refMaskIncrement.update(ofGetLastFrameTime());
+        refWallIncrementX.update(ofGetLastFrameTime());
+        refWallIncrementY.update(ofGetLastFrameTime());
+        refWallMaskIncrementY.update(ofGetLastFrameTime());
+        refOverlayIntensity.update(ofGetLastFrameTime());
+        refOverlayAlpha.update(ofGetLastFrameTime());
     }
+    beatAlpha.update(ofGetLastFrameTime());
 
     if(bloodGlucoseValue > -1 || testMode) {
         ofSetColor(ofColor::white);
@@ -189,37 +195,66 @@ void animation::update(){
         }
         masker.endMask(overlayLayer1);
 
-        //Overlay
-        if(refOverlayIntensity.val() < ofRandom(1) && framesSinceOverlayReset > framesBeforeRepeat) {
-            hyperMask.setTexturePosition(ofRandom(2), ofRandom(2));
-            hyperMask.setTextureScale(ofRandom(3.5, 7.5));
-            hyper.setTexturePosition(ofRandom(2), ofRandom(2));
-            hyper.setTextureScale(ofRandom(2.5, 6.5));
-            hyperAlpha = 255;
-            framesSinceOverlayReset = 0;
+        //Overlays
+        if(bloodGlucoseValue > bgHypo) {
+            //Animate hyper
+            if(refOverlayIntensity.val() < ofRandom(1) && framesSinceOverlayReset > framesBeforeRepeat) {
+                hyperMask.setTexturePosition(ofRandom(2), ofRandom(2));
+                hyperMask.setTextureScale(ofRandom(3.5, 7.5));
+                hyper.setTexturePosition(ofRandom(2), ofRandom(2));
+                hyper.setTextureScale(ofRandom(2.5, 6.5));
+                hyperAlpha = 255;
+                framesSinceOverlayReset = 0;
+            } else {
+                framesSinceOverlayReset++;
+                hyperAlpha -= 5;
+                hyper.incrementTextureScale(0.02);
+                hyper.incrementTextureOffsetY(0.0003);
+                hyperMask.incrementTextureScale(0.03);
+                hyperMask.incrementTextureOffsetY(-0.0003);
+            }
+
+            //Draw hyper
+            masker.beginLayer(overlayLayer2);
+            {
+                ofSetColor(170, 255, 255, hyperAlpha);
+                hyper.draw();
+            }
+            masker.endLayer(overlayLayer2);
+
+            masker.beginMask(overlayLayer2);
+            {
+                ofBackground(ofColor::black);
+                ofSetColor(ofColor::white, refOverlayAlpha.val());
+                hyperMask.draw();
+            }
+            masker.endMask(overlayLayer2);
         } else {
-            framesSinceOverlayReset++;
-            hyperAlpha -= 5;
-            hyper.incrementTextureScale(0.02);
-            hyper.incrementTextureOffsetY(0.0003);
-            hyperMask.incrementTextureScale(0.03);
-            hyperMask.incrementTextureOffsetY(-0.0003);
-        }
+            //Animate hypo
+            if(ofGetElapsedTimeMillis() > timeOfLastBeat + timeBetweenBeats) {
+                timeOfLastBeat = ofGetElapsedTimeMillis();
+                beatAlpha.setDuration(0.05);
+                beatAlpha.animateFromTo(0, 255);
+            } else if(beatAlpha.val() == 255) {
+                beatAlpha.setDuration(0.4);
+                beatAlpha.animateFromTo(255, 0);
+            }
 
-        masker.beginLayer(overlayLayer2);
-        {
-            ofSetColor(170, 255, 255, hyperAlpha);
-            hyper.draw();
-        }
-        masker.endLayer(overlayLayer2);
+            //Draw hypo
+            masker.beginLayer(overlayLayer2);
+            {
+                ofBackground(ofColor(255, 245, 219));
+            }
+            masker.endLayer(overlayLayer2);
 
-        masker.beginMask(overlayLayer2);
-        {
-            ofBackground(ofColor::black);
-            ofSetColor(ofColor::white, refOverlayAlpha.val());
-            hyperMask.draw();
+            masker.beginMask(overlayLayer2);
+            {
+                ofBackground(ofColor::black);
+                ofSetColor(ofColor(ofColor::white, beatAlpha.val()));
+                ofRect(0, 0, width, height);
+            }
+            masker.endMask(overlayLayer2);
         }
-        masker.endMask(overlayLayer2);
     }
     ofLogVerbose(className)
          << wallMaskScale.val() << " "
@@ -282,5 +317,5 @@ int animation::makeUsable(int _bloodGlucoseValue) {
 }
 
 int animation::currentTestBg() {
-    return ofMap(sinTestModeIncrement, -1, 1, bgLo, bgHi);
+    return bloodGlucoseValue;
 }
