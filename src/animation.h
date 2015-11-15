@@ -17,7 +17,7 @@ protected:
     string className;
     ofxLayerMask masker;
     ofxTexturePlane wall, wallMask, hyper, hyperMask;
-    int hyperAlpha;
+    int hyperAlpha, framesSinceOverlayReset, framesBeforeRepeat;
 
     int bloodGlucoseValue, bgLo, bgHi;
     ofxTexturePlane mask, layer;

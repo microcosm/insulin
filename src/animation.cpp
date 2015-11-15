@@ -26,6 +26,8 @@ void animation::setup(float _width, float _height, bool _testMode){
     hyper.setup("glass-3.png", width, height, 1.0, TEXTURE_OFFSET_MIDDLE_CENTER);
     hyperMask.setup("glass-4.png", width, height, 1.0, TEXTURE_OFFSET_MIDDLE_CENTER);
     hyperAlpha = 255;
+    framesSinceOverlayReset = 0;
+    framesBeforeRepeat = 20;
     
     //Blood speed
     layerIncrementLo = 0.3;
@@ -187,13 +189,15 @@ void animation::update(){
         masker.endMask(overlayLayer1);
 
         //Overlay
-        if(refOverlayIntensity.val() < ofRandom(1)) {
+        if(refOverlayIntensity.val() < ofRandom(1) && framesSinceOverlayReset > framesBeforeRepeat) {
             hyperMask.setTexturePosition(ofRandom(2), ofRandom(2));
             hyperMask.setTextureScale(ofRandom(3.5, 7.5));
             hyper.setTexturePosition(ofRandom(2), ofRandom(2));
             hyper.setTextureScale(ofRandom(2.5, 6.5));
             hyperAlpha = 255;
+            framesSinceOverlayReset = 0;
         } else {
+            framesSinceOverlayReset++;
             hyperAlpha -= 5;
             hyper.incrementTextureScale(-0.02);
             hyper.incrementTextureOffsetY(0.0003);
