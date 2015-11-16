@@ -19,6 +19,7 @@ protected:
     ofxTexturePlane wall, wallMask, hyper, hyperMask;
     int hypoAlpha, hyperAlpha;
     int framesSinceOverlayReset, framesBeforeRepeat;
+    int transitionDuration;
     unsigned long long timeOfLastBeat;
     float timeBetweenBeats, beatDuration;
 

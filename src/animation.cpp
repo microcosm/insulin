@@ -14,11 +14,12 @@ void animation::setup(float _width, float _height, bool _testMode){
     bloodGlucoseValue = -1;
     bgLo = 40; bgHi = 275;
     bgHypo = 75; bgHyper = 165;
+    transitionDuration = 30;
     
     wallMaskScaleLo = 0.45;
     wallMaskScaleHi = 0.06;
     wallMaskScale.reset(0.35);
-    wallMaskScale.setDuration(120);
+    wallMaskScale.setDuration(transitionDuration);
     wallMaskScale.setRepeatType(PLAY_ONCE);
     wallMaskScale.setCurve(EASE_IN_EASE_OUT);
 
@@ -39,14 +40,14 @@ void animation::setup(float _width, float _height, bool _testMode){
     layerIncrementLo = 0.3;
     layerIncrementHi = 0.05;
     refLayerIncrement.reset(0.4);
-    refLayerIncrement.setDuration(120);
+    refLayerIncrement.setDuration(transitionDuration);
     refLayerIncrement.setRepeatType(PLAY_ONCE);
     refLayerIncrement.setCurve(EASE_IN_EASE_OUT);
     
     maskIncrementLo = 0.06;
     maskIncrementHi = 0.0005;
     refMaskIncrement.reset(0.01);
-    refMaskIncrement.setDuration(120);
+    refMaskIncrement.setDuration(transitionDuration);
     refMaskIncrement.setRepeatType(PLAY_ONCE);
     refMaskIncrement.setCurve(EASE_IN_EASE_OUT);
     
@@ -54,21 +55,21 @@ void animation::setup(float _width, float _height, bool _testMode){
     wallIncrementXLo = 0.2;
     wallIncrementXHi = 0.01;
     refWallIncrementX.reset(0.1);
-    refWallIncrementX.setDuration(120);
+    refWallIncrementX.setDuration(transitionDuration);
     refWallIncrementX.setRepeatType(PLAY_ONCE);
     refWallIncrementX.setCurve(EASE_IN_EASE_OUT);
 
     wallIncrementYLo = 0.35;
     wallIncrementYHi = 0.06;
     refWallIncrementY.reset(-0.1);
-    refWallIncrementY.setDuration(120);
+    refWallIncrementY.setDuration(transitionDuration);
     refWallIncrementY.setRepeatType(PLAY_ONCE);
     refWallIncrementY.setCurve(EASE_IN_EASE_OUT);
     
     wallMaskIncrementYLo = 0.1;
     wallMaskIncrementYHi = 0.06;
     refWallMaskIncrementY.reset(0.08);
-    refWallMaskIncrementY.setDuration(120);
+    refWallMaskIncrementY.setDuration(transitionDuration);
     refWallMaskIncrementY.setRepeatType(PLAY_ONCE);
     refWallMaskIncrementY.setCurve(EASE_IN_EASE_OUT);
 
@@ -76,14 +77,14 @@ void animation::setup(float _width, float _height, bool _testMode){
     overlayIntensityLo = 1.0;
     overlayIntensityHi = 0.9;
     refOverlayIntensity.reset(1);
-    refOverlayIntensity.setDuration(120);
+    refOverlayIntensity.setDuration(transitionDuration);
     refOverlayIntensity.setRepeatType(PLAY_ONCE);
     refOverlayIntensity.setCurve(EASE_IN_EASE_OUT);
 
     overlayAlphaLo = -400;
     overlayAlphaHi = 400;
     refOverlayAlpha.reset(0);
-    refOverlayAlpha.setDuration(120);
+    refOverlayAlpha.setDuration(transitionDuration);
     refOverlayAlpha.setRepeatType(PLAY_ONCE);
     refOverlayAlpha.setCurve(EASE_IN_EASE_OUT);
 
