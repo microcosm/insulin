@@ -44,6 +44,7 @@ apps/*
 /bin/data/log.txt
 /bin/insulin
 /bin/libs
+/bin/readMe.txt
 
 #########################
 # IDE
