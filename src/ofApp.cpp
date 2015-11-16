@@ -6,7 +6,7 @@ void ofApp::setup() {
 
     animationClassName = "animation";
     width = 900; height = 1440;
-
+    ofSetFrameRate(60);
     ofSetLogLevel(OF_LOG_NOTICE);
 
     if(productionMode) {
