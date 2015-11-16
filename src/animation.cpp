@@ -226,7 +226,7 @@ void animation::update(){
         } else if (bloodGlucoseValue < bgHypo) {
             //Animate hypo
             timeBetweenBeats = ofMap(bloodGlucoseValue, bgLo, bgHi, 500, 2700);
-            beatDuration = ofMap(bloodGlucoseValue, bgLo, bgHi, 0.8, -1.0);
+            beatDuration = ofMap(bloodGlucoseValue, bgLo, bgHi, 0.4, -1.0);
             if(ofGetElapsedTimeMillis() > timeOfLastBeat + timeBetweenBeats) {
                 timeOfLastBeat = ofGetElapsedTimeMillis();
                 beatAlpha.setDuration(0.05);
