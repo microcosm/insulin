@@ -210,9 +210,9 @@ void animation::update(){
                 framesSinceOverlayReset++;
                 hyperAlpha -= 5;
                 hyper.incrementTextureScale(0.45 * ofGetLastFrameTime());
-                hyper.incrementTextureOffsetY(0.03 * ofGetLastFrameTime());
+                hyper.incrementTextureOffsetY(-0.02 * ofGetLastFrameTime());
                 hyperMask.incrementTextureScale(0.7 * ofGetLastFrameTime());
-                hyperMask.incrementTextureOffsetY(-0.03 * ofGetLastFrameTime());
+                hyperMask.incrementTextureOffsetY(0.02 * ofGetLastFrameTime());
             }
 
             //Draw hyper
