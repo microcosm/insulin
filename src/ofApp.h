@@ -18,7 +18,7 @@ class ofApp: public ofBaseApp
     void animateWhenTimerFinished();
 
 protected:
-    bool productionMode, testMode;
+    bool recordMode, testMode;
     inJsonParser jsonParser;
     inAnimation anim;
     int bloodGlucoseValue;

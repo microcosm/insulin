@@ -1,7 +1,7 @@
 #include "ofApp.h"
 
 void ofApp::setup() {
-    productionMode = false;
+    recordMode = true;
     testMode = false;
 
     ofSetFrameRate(60);
@@ -14,14 +14,9 @@ void ofApp::setup() {
     video.start();
     fbo.allocate(width, height, GL_RGB);
 
-    if(productionMode) {
-        ofLogToFile("log.txt", true);
-        ofToggleFullscreen();
-    } else {
-        ofLogToConsole();
-        ofSetLogLevel("inAnimation", OF_LOG_NOTICE);
-        ofSetWindowShape(width, height);
-    }
+    ofLogToConsole();
+    ofSetLogLevel("inAnimation", OF_LOG_NOTICE);
+    ofSetWindowShape(width, height);
 
     bloodGlucoseValue = -1;
     font.load("NovaMono.ttf", 120);
@@ -83,10 +78,6 @@ void ofApp::draw() {
     fbo.begin();
     {
         anim.draw();
-        if(!productionMode) {
-            ofSetColor(ofColor::white);
-            ofDrawBitmapString(ofToString(ofGetFrameRate()), 25, 25);
-        }
         if(testMode) {
             bloodGlucoseValue = floor(anim.currentTestBg() * 0.1) * 10;
         }
@@ -103,6 +94,10 @@ void ofApp::draw() {
         }
     }
     fbo.end();
+
+    ofBackground(ofColor::black);
+    ofSetColor(ofColor::white);
+    ofDrawBitmapString("Recording at framerate: " + ofToString(ofGetFrameRate()), 25, 25);
 
     fbo.readToPixels(pixels);
     bool success = video.addFrame(pixels);
