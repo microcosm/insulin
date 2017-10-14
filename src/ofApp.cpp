@@ -4,9 +4,15 @@ void ofApp::setup() {
     productionMode = false;
     testMode = false;
 
-    width = 900; height = 1440;
     ofSetFrameRate(60);
     ofSetLogLevel(OF_LOG_NOTICE);
+
+    width = 1280; height = 720;
+    video.setVideoCodec("mpeg4");
+    video.setVideoBitrate("8000k");
+    video.setup("insulin-render.mov", width, height, 60, 44100, 0);
+    video.start();
+    fbo.allocate(width, height, GL_RGB);
 
     if(productionMode) {
         ofLogToFile("log.txt", true);
@@ -74,24 +80,43 @@ void ofApp::update() {
 }
 
 void ofApp::draw() {
-    anim.draw();
-    if(!productionMode) {
-        ofSetColor(ofColor::white);
-        ofDrawBitmapString(ofToString(ofGetFrameRate()), 25, 25);
-    }
-    if(testMode) {
-        bloodGlucoseValue = floor(anim.currentTestBg() * 0.1) * 10;
-    }
-    if(bloodGlucoseValue != -1) {
-        ofSetColor(ofColor::white, bgOpacity.val());
-        ofDrawRectangle(bgBoxPosition.x, bgBoxPosition.y, boxSize.x, boxSize.y);
-        ofSetColor(ofColor::black, bgOpacity.val());
-        ofDrawRectangle(bgBoxPosition.x + boxBorderSize, bgBoxPosition.y + boxBorderSize, boxSize.x - boxBorderDouble, boxSize.y - boxBorderDouble);
-        ofSetColor(ofColor::lightGray, bgOpacity.val());
-        font.drawString(ofToString(bloodGlucoseValue), bgTextPosition.x, bgTextPosition.y);
-        if(testMode) {
-            testModeFont.drawString("~ TEST MODE ~", bgTextPosition.x - 10, bgTextPosition.y - 174);
+    fbo.begin();
+    {
+        anim.draw();
+        if(!productionMode) {
+            ofSetColor(ofColor::white);
+            ofDrawBitmapString(ofToString(ofGetFrameRate()), 25, 25);
         }
+        if(testMode) {
+            bloodGlucoseValue = floor(anim.currentTestBg() * 0.1) * 10;
+        }
+        if(bloodGlucoseValue != -1) {
+            ofSetColor(ofColor::white, bgOpacity.val());
+            ofDrawRectangle(bgBoxPosition.x, bgBoxPosition.y, boxSize.x, boxSize.y);
+            ofSetColor(ofColor::black, bgOpacity.val());
+            ofDrawRectangle(bgBoxPosition.x + boxBorderSize, bgBoxPosition.y + boxBorderSize, boxSize.x - boxBorderDouble, boxSize.y - boxBorderDouble);
+            ofSetColor(ofColor::lightGray, bgOpacity.val());
+            font.drawString(ofToString(bloodGlucoseValue), bgTextPosition.x, bgTextPosition.y);
+            if(testMode) {
+                testModeFont.drawString("~ TEST MODE ~", bgTextPosition.x - 10, bgTextPosition.y - 174);
+            }
+        }
+    }
+    fbo.end();
+
+    fbo.readToPixels(pixels);
+    bool success = video.addFrame(pixels);
+    if (!success) {
+        ofLogWarning("Frame " + ofToString(ofGetFrameNum()) + " was not added");
+    }
+
+    // Check if the video recorder encountered any error while writing video frame or audio smaples.
+    if (video.hasVideoError()) {
+        ofLogWarning("The video recorder failed to write some frames");
+    }
+
+    if (video.hasAudioError()) {
+        ofLogWarning("The video recorder failed to write some audio samples");
     }
 }
 
@@ -101,6 +126,7 @@ void ofApp::keyPressed(int key) {
 
 void ofApp::exit() {
     jsonParser.stopThread();
+    video.close();
 }
 
 void ofApp::startTimer() {

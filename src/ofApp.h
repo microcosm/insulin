@@ -4,6 +4,7 @@
 #include "inJsonParser.h"
 #include "inAnimation.h"
 #include "ofxAnimatableFloat.h"
+#include "ofxVideoRecorder.h"
 
 class ofApp: public ofBaseApp
 {
@@ -31,4 +32,8 @@ protected:
     bool newValueDetected, timerRunning;
     unsigned long long timerStartedAt;
     float delayBeforeAnimation, animationInSecs, animationOutSecs;
+
+    ofxVideoRecorder video;
+    ofFbo fbo;
+    ofPixels pixels;
 };

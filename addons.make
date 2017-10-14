@@ -2,3 +2,4 @@ ofxAnimatable
 ofxJSON
 ofxLayerMask
 ofxTexturePlane
+ofxVideoRecorder
