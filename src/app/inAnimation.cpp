@@ -180,7 +180,7 @@ void inAnimation::update(){
             wall.draw(-halfWidth, 0);
             wall.draw(halfWidth, 0, TEXTURE_FLIP_VERTICAL);
             ofSetColor(ofColor::red, refOverlayAlpha.val() * 0.34);
-            ofRect(0, 0, width, height);
+            ofDrawRectangle(0, 0, width, height);
         }
         masker.endLayer(overlayLayer1);
         
@@ -191,8 +191,8 @@ void inAnimation::update(){
             wallMask.draw();
             ofSetColor(ofColor::white);
             currentMaskWidth = ofMap(wallMaskScale.val(), wallMaskScaleLo, wallMaskScaleHi, -190, 370);
-            ofRect(0, 0, currentMaskWidth, height);
-            ofRect(width, 0, -currentMaskWidth, height);
+            ofDrawRectangle(0, 0, currentMaskWidth, height);
+            ofDrawRectangle(width, 0, -currentMaskWidth, height);
         }
         masker.endMask(overlayLayer1);
 
@@ -254,7 +254,7 @@ void inAnimation::update(){
             } else {
                 ofBackground(ofColor::black);
                 ofSetColor(ofColor(ofColor::white, beatAlpha.val()));
-                ofRect(0, 0, width, height);
+                ofDrawRectangle(0, 0, width, height);
             }
         }
         masker.endMask(overlayLayer2);

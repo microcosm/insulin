@@ -43,11 +43,11 @@ void ofApp::setup() {
 
     bgOpacity.setRepeatType(PLAY_ONCE);
     bgOpacity.setCurve(EASE_IN_EASE_OUT);
-    jsonParser.startThread(true, false);
+    jsonParser.startThread(true);
 
     anim.setup(width, height, testMode);
     if(testMode) {
-        testModeFont.loadFont("NovaMono.ttf", 30);
+        testModeFont.load("NovaMono.ttf", 30);
         bgOpacity.reset(255);
     }
 }
@@ -85,9 +85,9 @@ void ofApp::draw() {
     }
     if(bloodGlucoseValue != -1) {
         ofSetColor(ofColor::white, bgOpacity.val());
-        ofRect(bgBoxPosition.x, bgBoxPosition.y, boxSize.x, boxSize.y);
+        ofDrawRectangle(bgBoxPosition.x, bgBoxPosition.y, boxSize.x, boxSize.y);
         ofSetColor(ofColor::black, bgOpacity.val());
-        ofRect(bgBoxPosition.x + boxBorderSize, bgBoxPosition.y + boxBorderSize, boxSize.x - boxBorderDouble, boxSize.y - boxBorderDouble);
+        ofDrawRectangle(bgBoxPosition.x + boxBorderSize, bgBoxPosition.y + boxBorderSize, boxSize.x - boxBorderDouble, boxSize.y - boxBorderDouble);
         ofSetColor(ofColor::lightGray, bgOpacity.val());
         font.drawString(ofToString(bloodGlucoseValue), bgTextPosition.x, bgTextPosition.y);
         if(testMode) {
