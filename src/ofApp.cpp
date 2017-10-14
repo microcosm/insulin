@@ -4,7 +4,6 @@ void ofApp::setup() {
     productionMode = false;
     testMode = false;
 
-    animationClassName = "animation";
     width = 900; height = 1440;
     ofSetFrameRate(60);
     ofSetLogLevel(OF_LOG_NOTICE);
@@ -14,7 +13,7 @@ void ofApp::setup() {
         ofToggleFullscreen();
     } else {
         ofLogToConsole();
-        ofSetLogLevel(animationClassName, OF_LOG_NOTICE);
+        ofSetLogLevel("inAnimation", OF_LOG_NOTICE);
         ofSetWindowShape(width, height);
     }
 

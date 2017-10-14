@@ -18,7 +18,6 @@ class ofApp: public ofBaseApp
 
 protected:
     bool productionMode, testMode;
-    string animationClassName;
     inJsonParser jsonParser;
     inAnimation anim;
     int bloodGlucoseValue;
