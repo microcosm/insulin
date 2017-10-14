@@ -2,7 +2,7 @@
 #include "ofxTexturePlane.h"
 #include "ofxAnimatableFloat.h"
 
-class animation {
+class inAnimation {
     
 public:
     void setup(float _width, float _height, bool _testMode);

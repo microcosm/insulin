@@ -14,7 +14,7 @@
  unfiltered: [int] 148000
 */
 
-class jsonParse : public ofThread {
+class inJsonParser : public ofThread {
 public:
     int bloodGlucoseValue = -1;
     bool newValueDetected = false;

@@ -1,8 +1,8 @@
 #pragma once
 
 #include "ofMain.h"
-#include "jsonParse.h"
-#include "animation.h"
+#include "inJsonParser.h"
+#include "inAnimation.h"
 #include "ofxAnimatableFloat.h"
 
 class ofApp: public ofBaseApp
@@ -19,8 +19,8 @@ class ofApp: public ofBaseApp
 protected:
     bool productionMode, testMode;
     string animationClassName;
-    jsonParse jsonParser;
-    animation anim;
+    inJsonParser jsonParser;
+    inAnimation anim;
     int bloodGlucoseValue;
     ofVec2f bgTextPosition, bgTextOffset;
     ofVec2f bgBoxPosition, bgBoxOffset;

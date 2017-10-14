@@ -1,6 +1,6 @@
-#include "animation.h"
+#include "inAnimation.h"
 
-void animation::setup(float _width, float _height, bool _testMode){
+void inAnimation::setup(float _width, float _height, bool _testMode){
     className = "animation";
     testMode = _testMode;
     refTestModeIncrement = 0.0001;
@@ -115,7 +115,7 @@ void animation::setup(float _width, float _height, bool _testMode){
     }
 }
 
-void animation::update(){
+void inAnimation::update(){
     if(testMode) {
         sinTestModeIncrement = sin(ofGetElapsedTimeMillis() * refTestModeIncrement);
         bloodGlucoseValue = ofMap(sinTestModeIncrement, -1, 1, bgLo, bgHi);
@@ -269,7 +269,7 @@ void animation::update(){
          << refWallMaskIncrementY.val();
 }
 
-void animation::draw() {
+void inAnimation::draw() {
     if(bloodGlucoseValue > -1 || testMode) {
         ofSetColor(ofColor::red);
         layers.at(0).draw();
@@ -278,13 +278,13 @@ void animation::draw() {
     }
 }
 
-void animation::keyPressed(int key) {
+void inAnimation::keyPressed(int key) {
     if(key == 'o') {
         masker.toggleOverlay();
     }
 }
 
-void animation::newBgValue(int _bloodGlucoseValue) {
+void inAnimation::newBgValue(int _bloodGlucoseValue) {
     ofLogNotice(className) << "Recieved new value: " << _bloodGlucoseValue;
     if(!testMode) {
         if(bloodGlucoseValue == -1) {
@@ -311,7 +311,7 @@ void animation::newBgValue(int _bloodGlucoseValue) {
     }
 }
 
-int animation::makeUsable(int _bloodGlucoseValue) {
+int inAnimation::makeUsable(int _bloodGlucoseValue) {
     if(_bloodGlucoseValue < 20) {
         return 20;
     } else if(_bloodGlucoseValue > 270) {
@@ -320,6 +320,6 @@ int animation::makeUsable(int _bloodGlucoseValue) {
     return _bloodGlucoseValue;
 }
 
-int animation::currentTestBg() {
+int inAnimation::currentTestBg() {
     return bloodGlucoseValue;
 }
