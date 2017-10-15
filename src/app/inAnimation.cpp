@@ -190,7 +190,7 @@ void inAnimation::update(){
             wallMask.incrementTextureOffsetY(wallMaskIncrementY);
             wallMask.draw();
             ofSetColor(ofColor::red);
-            currentMaskWidth = ofMap(wallMaskScale.val(), wallMaskScaleLo, wallMaskScaleHi, 20, 400);
+            currentMaskWidth = ofMap(wallMaskScale.val(), wallMaskScaleLo, wallMaskScaleHi, 40, 320);
             ofDrawRectangle(0, 0, currentMaskWidth, height);
             ofDrawRectangle(width, 0, -currentMaskWidth, height);
             ofSetColor(ofColor::white);
