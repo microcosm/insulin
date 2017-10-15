@@ -15,7 +15,7 @@ void inAnimation::setup(float _width, float _height, bool _testMode){
     bgLo = 40; bgHi = 275;
     bgHypo = 75; bgHyper = 165;
     transitionDuration = 30;
-    
+
     wallMaskScaleLo = 0.45;
     wallMaskScaleHi = 0.06;
     wallMaskScale.reset(0.35);
@@ -35,7 +35,7 @@ void inAnimation::setup(float _width, float _height, bool _testMode){
     beatAlpha.reset(0);
     beatAlpha.setCurve(LINEAR);
     beatAlpha.setRepeatType(PLAY_ONCE);
-    
+
     //Blood speed
     layerIncrementLo = 0.3;
     layerIncrementHi = 0.05;
@@ -43,14 +43,14 @@ void inAnimation::setup(float _width, float _height, bool _testMode){
     refLayerIncrement.setDuration(transitionDuration);
     refLayerIncrement.setRepeatType(PLAY_ONCE);
     refLayerIncrement.setCurve(EASE_IN_EASE_OUT);
-    
+
     maskIncrementLo = 0.06;
     maskIncrementHi = 0.0005;
     refMaskIncrement.reset(0.01);
     refMaskIncrement.setDuration(transitionDuration);
     refMaskIncrement.setRepeatType(PLAY_ONCE);
     refMaskIncrement.setCurve(EASE_IN_EASE_OUT);
-    
+
     //Wall speed
     wallIncrementXLo = 0.2;
     wallIncrementXHi = 0.01;
@@ -65,7 +65,7 @@ void inAnimation::setup(float _width, float _height, bool _testMode){
     refWallIncrementY.setDuration(transitionDuration);
     refWallIncrementY.setRepeatType(PLAY_ONCE);
     refWallIncrementY.setCurve(EASE_IN_EASE_OUT);
-    
+
     wallMaskIncrementYLo = 0.1;
     wallMaskIncrementYHi = 0.06;
     refWallMaskIncrementY.reset(0.08);
@@ -95,7 +95,7 @@ void inAnimation::setup(float _width, float _height, bool _testMode){
     overlayLayer1 = numBloodLayers;
     overlayLayer2 = numBloodLayers + 1;
     masker.setup(width, height, numBloodLayers + numOverlayLayers, ISOLATE_LAYERS);
-    
+
     layer.setup("glass-3.png", width, height);
     for(int i = 0; i < numBloodLayers; i++) {
         scale = ofMap(i, 0, numBloodLayers-1, 4, 2.5);
@@ -103,7 +103,7 @@ void inAnimation::setup(float _width, float _height, bool _testMode){
         layer.setTextureOffset(i % 2 == 0 ? TEXTURE_OFFSET__MIDDLE__LEFT_TO_CENTER : TEXTURE_OFFSET__MIDDLE__RIGHT_TO_CENTER);
         layer.setTextureOffsetY(ofRandom(2));
         layers.push_back(layer);
-        
+
         maskLoader.clear();
         scale = ofMap(i, 0, numBloodLayers-1, 6, 0.33);
         mask.setup("tissue.png", width, height, scale, TEXTURE_OFFSET__MIDDLE__LEFT_TO_CENTER);
@@ -153,7 +153,7 @@ void inAnimation::update(){
                 layers.at(i).draw();
             }
             masker.endLayer(i);
-            
+
             masker.beginMask(i);
             {
                 ofSetColor(ofColor::white);
@@ -166,12 +166,12 @@ void inAnimation::update(){
             }
             masker.endMask(i);
         }
-        
+
         //Walls
         wallIncrementX = refWallIncrementX.val() * ofGetLastFrameTime();
         wallIncrementY = refWallIncrementY.val() * ofGetLastFrameTime();
         wallMaskIncrementY = refWallMaskIncrementY.val() * ofGetLastFrameTime();
-        
+
         masker.beginLayer(overlayLayer1);
         {
             ofSetColor(ofColor::white, (refOverlayAlpha.val() + 340) * 3);
@@ -183,16 +183,17 @@ void inAnimation::update(){
             ofDrawRectangle(0, 0, width, height);
         }
         masker.endLayer(overlayLayer1);
-        
+
         masker.beginMask(overlayLayer1);
         {
             wallMask.setTextureScale(wallMaskScale.val());
             wallMask.incrementTextureOffsetY(wallMaskIncrementY);
             wallMask.draw();
-            ofSetColor(ofColor::white);
-            currentMaskWidth = ofMap(wallMaskScale.val(), wallMaskScaleLo, wallMaskScaleHi, -190, 370);
+            ofSetColor(ofColor::red);
+            currentMaskWidth = ofMap(wallMaskScale.val(), wallMaskScaleLo, wallMaskScaleHi, 20, 400);
             ofDrawRectangle(0, 0, currentMaskWidth, height);
             ofDrawRectangle(width, 0, -currentMaskWidth, height);
+            ofSetColor(ofColor::white);
         }
         masker.endMask(overlayLayer1);
 
