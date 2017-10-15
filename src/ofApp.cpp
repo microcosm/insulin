@@ -1,15 +1,15 @@
 #include "ofApp.h"
 
 void ofApp::setup() {
-    recordMode = true;
-    testMode = false;
+    recordMode = false;
+    testMode = true;
 
     ofSetFrameRate(60);
     ofSetLogLevel(OF_LOG_NOTICE);
 
-    width = 1280; height = 720;
+    width = 720; height = 1280;
     video.setVideoCodec("mpeg4");
-    video.setVideoBitrate("8000k");
+    video.setVideoBitrate("10000k");
     video.setup("insulin-render.mov", width, height, 60, 44100, 0);
     video.start();
     fbo.allocate(width, height, GL_RGB);
@@ -75,7 +75,13 @@ void ofApp::update() {
 }
 
 void ofApp::draw() {
-    fbo.begin();
+    ofBackground(ofColor::black);
+    ofSetColor(ofColor::white);
+
+    if(recordMode) {
+        fbo.begin();
+    }
+
     {
         anim.draw();
         if(testMode) {
@@ -93,25 +99,26 @@ void ofApp::draw() {
             }
         }
     }
-    fbo.end();
 
-    ofBackground(ofColor::black);
-    ofSetColor(ofColor::white);
-    ofDrawBitmapString("Recording at framerate: " + ofToString(ofGetFrameRate()), 25, 25);
+    if(recordMode) {
+        fbo.end();
+        ofDrawBitmapString("RECORDING at framerate: " + ofToString(ofGetFrameRate()), 25, 25);
 
-    fbo.readToPixels(pixels);
-    bool success = video.addFrame(pixels);
-    if (!success) {
-        ofLogWarning("Frame " + ofToString(ofGetFrameNum()) + " was not added");
-    }
+        fbo.readToPixels(pixels);
+        bool success = video.addFrame(pixels);
+        if (!success) {
+            ofLogWarning("Frame " + ofToString(ofGetFrameNum()) + " was not added");
+        }
 
-    // Check if the video recorder encountered any error while writing video frame or audio smaples.
-    if (video.hasVideoError()) {
-        ofLogWarning("The video recorder failed to write some frames");
-    }
+        if (video.hasVideoError()) {
+            ofLogWarning("The video recorder failed to write some frames");
+        }
 
-    if (video.hasAudioError()) {
-        ofLogWarning("The video recorder failed to write some audio samples");
+        if (video.hasAudioError()) {
+            ofLogWarning("The video recorder failed to write some audio samples");
+        }
+    } else {
+        ofDrawBitmapString("Framerate: " + ofToString(ofGetFrameRate()), 25, 25);
     }
 }
 
