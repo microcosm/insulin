@@ -1,7 +1,7 @@
 #include "inAnimation.h"
 
 void inAnimation::setup(float _width, float _height, bool _testMode){
-    className = "animation";
+    className = "inAnimation";
     testMode = _testMode;
     refTestModeIncrement = 0.0001;
 
